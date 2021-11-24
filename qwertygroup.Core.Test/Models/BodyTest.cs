@@ -5,6 +5,7 @@ namespace qwertygroup.Core.Test
 {
     public class BodyTest
     {
+        
         private Body _body;
         public BodyTest(){
             _body = new Body();
