@@ -8,6 +8,7 @@ namespace qwertygroup.Core.Test.IServices
 {
     public class IBodyServiceTest
     {
+
         [Fact]
         public void IBodyService_IsAvailable(){
             var service = new Mock<IBodyService>().Object;
@@ -23,6 +24,17 @@ namespace qwertygroup.Core.Test.IServices
                 .Returns(fakeList);
             var service = mock.Object;
             Assert.Equal(fakeList, service.GetBodies());
+        }
+
+        [Fact]
+        public void Create_Body_Method_Exists_And_Returns_The_Created_Body()
+        {
+            var mock = new Mock<IBodyService>();
+            Body body = new Body { Text = "someBody" };
+            mock.Setup(r => r.CreateBody(body.Text))
+            .Returns(body);
+            var service = mock.Object;
+            Assert.Equal(body, service.CreateBody(body.Text));
         }
     }
 }

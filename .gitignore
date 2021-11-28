@@ -469,3 +469,4 @@ TestProductionCodeXunit/obj/Debug/net5.0/TestProductionCodeXunit.pdb
 TestProductionCodeXunit/obj/rider.project.restore.info
 .vscode/tasks.json
 .vscode/launch.json
+.vscode/settings.json

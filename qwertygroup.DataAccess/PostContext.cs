@@ -8,7 +8,6 @@ namespace qwertygroup.DataAccess
     {
         public PostContext(DbContextOptions opt) : base(opt)
         {
-
         }
 
         public DbSet<BodyEntity> bodies { get; set; }
