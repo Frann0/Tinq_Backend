@@ -36,5 +36,22 @@ namespace qwertygroup.Core.Test.IServices
             var service = mock.Object;
             Assert.Equal(body, service.CreateBody(body.Text));
         }
+
+        [Fact]
+        public void Delete_Body_Method_Exists()
+        {
+            var mock = new Mock<IBodyService>();
+            Body body = new Body { Text = "someBody" };
+            mock.Setup(r => r.DeleteBody(body.Id));
+        }
+
+        [Fact]
+        public void Update_Body_Method_Exists()
+        {
+            var mock = new Mock<IBodyService>();
+            Body body = new Body { Text = "someBody" };
+            mock.Setup(r => r.UpdateBody(body));
+        }
+
     }
 }

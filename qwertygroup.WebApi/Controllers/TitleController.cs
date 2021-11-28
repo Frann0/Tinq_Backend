@@ -9,29 +9,29 @@ using qwertygroup.WebApi.Dtos;
 namespace qwertygroup.WebApi.Controllers
 {
     [Route("[controller]")]
-    public class BodyController : Controller
+    public class TitleController : Controller
     {
-        private readonly IBodyService _bodyService;
+        private readonly ITitleService _titleService;
 
-        public BodyController(IBodyService bodyService)
+        public TitleController(ITitleService titleService)
         {
-            _bodyService = bodyService;
+            _titleService = titleService;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<BodyDto>> getAllBodies()
+        public ActionResult<IEnumerable<TitleDto>> getAllTitles()
         {
-            return Ok(_bodyService.GetBodies().Select(
-                newBody => new BodyDto { Text = newBody.Text }
-                ).ToList());
+            return Ok(_titleService.GetTitles().Select(
+                newTitle => new TitleDto { Text = newTitle.Text }
+            ).ToList());
         }
 
         [HttpPost]
-        public ActionResult<Body> CreateBody([FromBody] BodyDto bodyDto)
+        public ActionResult<Title> CreateTitle([FromBody] TitleDto titleDto)
         {
             try
             {
-                return Ok(_bodyService.CreateBody(bodyDto.Text));
+                return Ok(_titleService.CreateTitle(titleDto.Text));
             }
             catch (Exception e)
             {
@@ -40,12 +40,12 @@ namespace qwertygroup.WebApi.Controllers
         }
 
         [HttpDelete]
-        public ActionResult DeleteBody(int id)
+        public ActionResult DeleteTitle(int id)
         {
             try
             {
-                _bodyService.DeleteBody(id);
-                return Ok($"Deleted {id}");
+                _titleService.DeleteTitle(id);
+                return Ok($"Deleted {id}.");
             }
             catch (Exception e)
             {
@@ -54,17 +54,16 @@ namespace qwertygroup.WebApi.Controllers
         }
 
         [HttpPatch]
-        public ActionResult<Body> UpdateBody([FromBody] Body body)
+        public ActionResult<Title> UpdateTitle([FromBody] Title title)
         {
             try
             {
-                return Ok(_bodyService.UpdateBody(body));
+                return Ok(_titleService.UpdateTitle(title));
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
-
     }
 }

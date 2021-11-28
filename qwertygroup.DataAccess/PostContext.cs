@@ -11,6 +11,7 @@ namespace qwertygroup.DataAccess
         }
 
         public DbSet<BodyEntity> bodies { get; set; }
+        public DbSet<TitleEntity> titles { get; set; }
 
     }
 }

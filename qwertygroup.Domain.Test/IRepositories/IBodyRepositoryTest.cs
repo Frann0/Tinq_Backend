@@ -17,6 +17,7 @@ namespace qwertygroup.Domain.Test.IRepositories
             var repository = new Mock<IBodyRepository>().Object;
             Assert.NotNull(repository);
         }
+        
         [Fact]
         public void GetBody_WithNoParam_ReturnsListOfAllBodies()
         {
