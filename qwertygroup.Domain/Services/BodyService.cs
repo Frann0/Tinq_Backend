@@ -10,13 +10,13 @@ namespace qwertygroup.Domain.Services
 
         public BodyService(IBodyRepository bodyRepository)
         {
-            this._bodyRepository = bodyRepository??throw new System.MissingFieldException(
+            _bodyRepository = bodyRepository??throw new System.MissingFieldException(
                 "BodyRepository must not be null!");
         }
 
         public List<Body> GetBodies()
         {
-            throw new System.NotImplementedException();
+            return _bodyRepository.GetBodies();
         }
     }
 }
