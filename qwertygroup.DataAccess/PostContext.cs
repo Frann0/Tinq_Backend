@@ -6,7 +6,7 @@ namespace qwertygroup.DataAccess
 {
     public class PostContext : DbContext
     {
-        public PostContext(DbContextOptions opt) : base(opt)
+        public PostContext(DbContextOptions<PostContext> opt) : base(opt)
         {
         }
 

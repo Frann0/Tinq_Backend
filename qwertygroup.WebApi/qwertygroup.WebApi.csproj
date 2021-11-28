@@ -3,6 +3,7 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.12" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.12" />
@@ -11,5 +12,6 @@
     <ProjectReference Include="..\qwertygroup.DataAccess\qwertygroup.DataAccess.csproj" />
     <ProjectReference Include="..\qwertygroup.Core\qwertygroup.Core.csproj" />
     <ProjectReference Include="..\qwertygroup.Domain\qwertygroup.Domain.csproj" />
+    <ProjectReference Include="..\qwertygroup.Security\qwertygroup.Security.csproj" />
   </ItemGroup>
 </Project>
