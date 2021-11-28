@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using qwertygroup.Security.Entities;
 using qwertygroup.Security.Models;
 
 namespace qwertygroup.Security
@@ -10,6 +11,6 @@ namespace qwertygroup.Security
             
         }
 
-        public DbSet<LoginUserEntity> LoginUsers { get; set; }
+        public DbSet<AuthUserEntity> AuthUsers { get; set; }
     }
 }

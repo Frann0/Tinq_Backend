@@ -1,9 +1,12 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using qwertygroup.Core.IServices;
 using qwertygroup.DataAccess;
@@ -11,8 +14,11 @@ using qwertygroup.DataAccess.Entities;
 using qwertygroup.DataAccess.Repositories;
 using qwertygroup.Domain.Services;
 using qwertygroup.Security;
+using qwertygroup.Security.Entities;
+using qwertygroup.Security.IAuthUserService;
 using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.Models;
+using qwertygroup.Security.Services;
 
 namespace qwertygroup.WebApi
 {
@@ -60,6 +66,27 @@ namespace qwertygroup.WebApi
                 });
             });
             
+            services.AddAuthentication(authenticationOptions =>
+                {
+                    authenticationOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    authenticationOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = 
+                            new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"])),
+                        ValidateIssuer = true,
+                        ValidIssuer = _configuration["JwtConfig:Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = _configuration["JwtConfig:Audience"],
+                        ValidateLifetime = true
+                    };
+                });
+            
             services.AddScoped<IBodyRepository, BodyRepository>();
             services.AddScoped<IBodyService, BodyService>();
 
@@ -73,7 +100,7 @@ namespace qwertygroup.WebApi
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PostContext postContext,
-            AuthDbContext authDbContext)
+            AuthDbContext authDbContext, ISecurityService securityService)
         {
             if (env.IsDevelopment())
             {
@@ -99,18 +126,12 @@ namespace qwertygroup.WebApi
                 Text = "What's the whole point of being pretty on the outside when you’re so ugly on the inside?"
             });
             postContext.SaveChanges();
-
-            authDbContext.Database.EnsureDeleted();
-            authDbContext.Database.EnsureCreated();
-            authDbContext.LoginUsers.Add(new LoginUserEntity()
-            {
-                Username = "jbn",
-                Password = "demo123"
-            });
-            authDbContext.SaveChanges();
-
+            
+            new AuthDbSeeder(authDbContext, securityService).SeedDevelopment();
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseRouting();
 

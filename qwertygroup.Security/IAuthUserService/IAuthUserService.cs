@@ -1,9 +1,9 @@
 using qwertygroup.Security.Models;
 
-namespace qwertygroup.Security
+namespace qwertygroup.Security.IAuthUserService
 {
     public interface IAuthUserService
     {
-        AuthUser Login(string username, string password);
+        AuthUser GetUser(string username);
     }
 }

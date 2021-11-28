@@ -16,7 +16,7 @@ namespace qwertygroup.WebApi.Controllers
             _bodyService=bodyService;
         }
         
-        
+        [Authorize]
         [HttpGet]
         public IEnumerable<BodyDto> getAllPosts(){
             return _bodyService.GetBodies().Select(

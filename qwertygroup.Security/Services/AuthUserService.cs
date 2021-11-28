@@ -3,7 +3,7 @@ using qwertygroup.Security.Models;
 
 namespace qwertygroup.Security
 {
-    public class AuthUserService : IAuthUserService
+    public class AuthUserService : IAuthUserService.IAuthUserService
     {
         private readonly IAuthUserRepository _authUserRepository;
 
@@ -12,9 +12,11 @@ namespace qwertygroup.Security
             _authUserRepository = authUserRepository;
         }
         
-        public AuthUser Login(string username, string password)
+        public AuthUser GetUser(string username)
         {
-            return _authUserRepository.FindByUsernameAndPassword(username, password);
+            return _authUserRepository.FindUser(username);
         }
+
+        
     }
 }
