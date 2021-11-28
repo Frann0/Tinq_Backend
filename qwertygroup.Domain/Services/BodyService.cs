@@ -13,6 +13,11 @@ namespace qwertygroup.Domain.Services
             _bodyRepository = bodyRepository ?? throw new System.MissingFieldException(
                 "BodyService Must have a BodyRepository!");
         }
+        
+        public List<Body> GetBodies()
+        {
+            return _bodyRepository.GetBodies();
+        }
 
         public Body CreateBody(string text)
         {
@@ -32,16 +37,12 @@ namespace qwertygroup.Domain.Services
             {
                 _bodyRepository.DeleteBody(id);
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             {
-                throw new System.InvalidOperationException($"No body with given id {id}");
+                throw new System.InvalidOperationException($"No body with given id: {id}");
             }
         }
 
-        public List<Body> GetBodies()
-        {
-            return _bodyRepository.GetBodies();
-        }
 
         public Body UpdateBody(Body body)
         {
@@ -54,7 +55,7 @@ namespace qwertygroup.Domain.Services
             {
                 return _bodyRepository.UpdateBody(body);
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             {
                 throw new System.InvalidOperationException($"No body with given id {body.Id}");
             }

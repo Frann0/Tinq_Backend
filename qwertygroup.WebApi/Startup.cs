@@ -12,6 +12,7 @@ using qwertygroup.Core.IServices;
 using qwertygroup.DataAccess;
 using qwertygroup.DataAccess.Entities;
 using qwertygroup.DataAccess.Repositories;
+using qwertygroup.Domain.IRepositories;
 using qwertygroup.Domain.Services;
 using qwertygroup.Security;
 using qwertygroup.Security.Entities;
@@ -95,6 +96,8 @@ namespace qwertygroup.WebApi
             services.AddScoped<ISecurityService, SecurityService>();
 
             services.AddDbContext<AuthDbContext>(options => options.UseSqlite(_configuration.GetConnectionString("AuthConnection")));
+            services.AddScoped<ITitleRepository,TitleRepository>();
+            services.AddScoped<ITitleService,TitleService>();
             services.AddDbContext<PostContext>(options => options.UseSqlite("Data Source=main.Db"));
         }
 
@@ -124,6 +127,14 @@ namespace qwertygroup.WebApi
             {
                 Id = 3,
                 Text = "What's the whole point of being pretty on the outside when you’re so ugly on the inside?"
+            });
+            postContext.titles.Add(new TitleEntity{
+                Id=1,
+                Text = "Existential crisis sucks"
+            });
+            postContext.titles.Add(new TitleEntity{
+                Id=2,
+                Text = "Potatoes ruin society"
             });
             postContext.SaveChanges();
             
