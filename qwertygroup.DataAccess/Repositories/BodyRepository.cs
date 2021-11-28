@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using qwertygroup.Core.Models;
+using qwertygroup.DataAccess.Entities;
 using qwertygroup.Domain.Services;
 
 namespace qwertygroup.DataAccess.Repositories
@@ -13,10 +14,51 @@ namespace qwertygroup.DataAccess.Repositories
         {
             _context = context;
         }
+
+        public Body CreateBody(string text)
+        {
+            BodyEntity bodyEntity = new BodyEntity { Text = text };
+            _context.bodies.Add(bodyEntity);
+            _context.SaveChanges();
+            return new Body { Id = bodyEntity.Id, Text = bodyEntity.Text };
+        }
+
+        public void DeleteBody(int id)
+        {
+            try
+            {
+                BodyEntity bodyEntity = _context.bodies.First(e => e.Id == id);
+                _context.bodies.Remove(bodyEntity);
+                _context.SaveChanges();
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
+
         public List<Body> GetBodies()
         {
             return _context.bodies.Select(
-                b => new Body { Id = b.Id, Text = b.Text }).ToList();
+                body => new Body { Id = body.Id, Text = body.Text }
+            ).ToList();
+        }
+
+        public Body UpdateBody(Body body)
+        {
+            try
+            {
+                BodyEntity bodyEntity = _context.bodies.First(e => e.Id == body.Id);
+                bodyEntity.Text = body.Text;
+                _context.SaveChanges();
+                return new Body { Id = bodyEntity.Id, Text = bodyEntity.Text };
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
