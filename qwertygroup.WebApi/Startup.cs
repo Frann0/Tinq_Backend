@@ -118,7 +118,7 @@ namespace qwertygroup.WebApi
             services.AddScoped<ISecurityService, SecurityService>();
 
             services.AddDbContext<AuthDbContext>(options => options.UseSqlite(_configuration.GetConnectionString("AuthConnection")));
-            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<AuthDbContext>();
             
             services.AddScoped<ITitleRepository,TitleRepository>();
@@ -128,7 +128,7 @@ namespace qwertygroup.WebApi
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PostContext postContext,
-            AuthDbContext authDbContext, ISecurityService securityService)
+            AuthDbContext authDbContext, ISecurityService securityService, UserManager<IdentityUser> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -163,7 +163,7 @@ namespace qwertygroup.WebApi
             });
             postContext.SaveChanges();
             
-            new AuthDbSeeder(authDbContext, securityService).SeedDevelopment();
+            new AuthDbSeeder(authDbContext, securityService, userManager).SeedDevelopment();
             app.UseCors("Dev-cors");
             app.UseHttpsRedirection();
             

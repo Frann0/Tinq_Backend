@@ -29,15 +29,28 @@ namespace qwertygroup.WebApi.Controllers
        
         [AllowAnonymous]
         [HttpPost(nameof(Login))]
-        public ActionResult<TokenDto> Login(LoginDto dto)
+        public async Task<ActionResult<TokenDto>> Login([FromBody] LoginDto loginDto)
         {
-            var token = _securityService.GenerateJwtToken(dto.Username, dto.Password);
+            IdentityUser identityUser = await _userManager.FindByNameAsync(loginDto.Username);
+            var result =
+                _userManager.PasswordHasher.VerifyHashedPassword(identityUser, identityUser.PasswordHash,
+                    loginDto.Password);
+
+            if (result == PasswordVerificationResult.Failed)
+            {
+                return BadRequest("Login failed");
+            }
+
+            var token = _securityService.GenerateJwtToken(loginDto.Username, loginDto.Password);
             return new TokenDto()
             {
                 Token = token.Token,
-                Message = token.Message
+                Message = "Success!"
             };
+
         }
+
+        
 
         [HttpPost(nameof(Register))]
         public ActionResult Register([FromBody] RegisterDto registerDto)
