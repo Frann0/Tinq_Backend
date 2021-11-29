@@ -88,6 +88,26 @@ namespace qwertygroup.WebApi
                     };
                 });
             
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Dev-cors", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+                options.AddPolicy("Prod-cors", policy =>
+                {
+                    policy
+                        .WithOrigins(
+                            "https://legosforlife2021.firebaseapp.com",
+                            "https://legosforlife2021.web.app")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                } );
+            });
+            
             services.AddScoped<IBodyRepository, BodyRepository>();
             services.AddScoped<IBodyService, BodyService>();
 
@@ -139,7 +159,7 @@ namespace qwertygroup.WebApi
             postContext.SaveChanges();
             
             new AuthDbSeeder(authDbContext, securityService).SeedDevelopment();
-
+            app.UseCors("Dev-cors");
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
