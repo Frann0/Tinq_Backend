@@ -22,6 +22,7 @@ namespace qwertygroup.Security
 
         public AuthUser FindUser(string username)
         {
+            /*
             var authUserEntity = _authDbContext.AuthUsers.FirstOrDefault(user =>
                 user.Username.Equals(username));
             
@@ -34,6 +35,8 @@ namespace qwertygroup.Security
                 HashedPassword = authUserEntity.HashedPassword,
                 Salt = Encoding.ASCII.GetBytes(authUserEntity.Salt)
             };
+            */
+            return null;
         }
     }
 }

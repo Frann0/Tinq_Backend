@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using qwertygroup.Security.Entities;
 
 namespace qwertygroup.Security
@@ -7,30 +8,33 @@ namespace qwertygroup.Security
     {
         private readonly AuthDbContext _ctx;
         private readonly ISecurityService _securityService;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public AuthDbSeeder(AuthDbContext ctx,
-            ISecurityService securityService)
+            ISecurityService securityService, UserManager<IdentityUser> userManager)
         {
             _ctx = ctx;
             _securityService = securityService;
+            _userManager = userManager;
         }
         
         public void SeedDevelopment()
         {
+            
             _ctx.Database.EnsureDeleted();
             _ctx.Database.EnsureCreated();
+            
 
-            var salt = "#)(&€=&)adljfh";
-            _ctx.AuthUsers.Add(new AuthUserEntity
+            var identityUser = new IdentityUser()
             {
-                Salt = salt,
-                HashedPassword = _securityService.HashedPassword(
-                    "demo123", 
-                    Encoding.ASCII.GetBytes(salt)),
-                    Username = "jbn"
-            });
-            _ctx.SaveChanges();
+                UserName = "jjj",
+                Email = "j@j.dk"
+            };
+
+            _userManager.CreateAsync(identityUser, "Pa$$w0rd");
+            
         }
+        
 
         public void SeedProduction()
         {
@@ -39,5 +43,6 @@ namespace qwertygroup.Security
 
             
         }
+        
     }
 }
