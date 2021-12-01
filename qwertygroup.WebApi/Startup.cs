@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -79,6 +80,7 @@ namespace qwertygroup.WebApi
                 })
                 .AddJwtBearer(options =>
                 {
+                    options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
@@ -92,6 +94,26 @@ namespace qwertygroup.WebApi
                         ValidateLifetime = true
                     };
                 });
+            
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Dev-cors", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+                options.AddPolicy("Prod-cors", policy =>
+                {
+                    policy
+                        .WithOrigins(
+                            "https://legosforlife2021.firebaseapp.com",
+                            "https://legosforlife2021.web.app")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                } );
+            });
 
             services.AddScoped<IBodyRepository, BodyRepository>();
             services.AddScoped<IBodyService, BodyService>();
@@ -102,6 +124,7 @@ namespace qwertygroup.WebApi
             services.AddScoped<ISecurityService, SecurityService>();
 
             services.AddDbContext<AuthDbContext>(options => options.UseSqlite(_configuration.GetConnectionString("AuthConnection")));
+
             services.AddScoped<ITitleRepository, TitleRepository>();
             services.AddScoped<ITitleService, TitleService>();
 
@@ -113,11 +136,15 @@ namespace qwertygroup.WebApi
                 options.UseSqlite("Data Source=main.db");
                 options.UseLoggerFactory(loggerFactory);
             });
+            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddEntityFrameworkStores<AuthDbContext>();
+            
+            services.AddDbContext<PostContext>(options => options.UseSqlite("Data Source=main.db"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PostContext postContext,
-            AuthDbContext authDbContext, ISecurityService securityService)
+            AuthDbContext authDbContext, ISecurityService securityService, UserManager<IdentityUser> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -158,14 +185,14 @@ namespace qwertygroup.WebApi
             postContext.SaveChanges();
             #endregion
 
-            new AuthDbSeeder(authDbContext, securityService).SeedDevelopment();
-
+            //new AuthDbSeeder(authDbContext, securityService).SeedDevelopment();
+            
+            new AuthDbSeeder(authDbContext, securityService, userManager).SeedDevelopment();
+            app.UseCors("Dev-cors");
             app.UseHttpsRedirection();
-
-            app.UseAuthentication();
-
+            
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
