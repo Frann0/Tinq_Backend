@@ -23,5 +23,3 @@ jobs:
       run: dotnet build
     - name: Test
       run: dotnet test
-    - name: Run
-      run: dotnet run --project qwertygroup.WebApi/qwertygroup.WebApi.csproj
