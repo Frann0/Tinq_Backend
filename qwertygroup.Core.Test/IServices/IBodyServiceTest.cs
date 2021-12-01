@@ -53,5 +53,14 @@ namespace qwertygroup.Core.Test.IServices
             mock.Setup(r => r.UpdateBody(body));
         }
 
+        [Fact]
+        public void Get_Body_Method_Exists(){
+            var mock = new Mock<IBodyService>();
+            Body body = new Body { Id=1,Text = "someBody" };
+            mock.Setup(r => r.GetBody(body.Id)
+            ).Returns(body);
+            Assert.IsType<Body>(mock.Object.GetBody(body.Id));
+        }
+
     }
 }

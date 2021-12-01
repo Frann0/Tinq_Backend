@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using qwertygroup.Core.IServices;
@@ -32,12 +33,16 @@ namespace qwertygroup.WebApi
             _configuration = configuration;
         }
 
-        
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            var loggerFactory = LoggerFactory.Create(builder =>
+                        {
+                            builder.AddConsole();
+                        }
+                        );
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -66,7 +71,7 @@ namespace qwertygroup.WebApi
                     }
                 });
             });
-            
+
             services.AddAuthentication(authenticationOptions =>
                 {
                     authenticationOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -77,7 +82,7 @@ namespace qwertygroup.WebApi
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = 
+                        IssuerSigningKey =
                             new SymmetricSecurityKey(
                                 Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"])),
                         ValidateIssuer = true,
@@ -87,18 +92,27 @@ namespace qwertygroup.WebApi
                         ValidateLifetime = true
                     };
                 });
-            
+
             services.AddScoped<IBodyRepository, BodyRepository>();
             services.AddScoped<IBodyService, BodyService>();
+
 
             services.AddScoped<IAuthUserRepository, AuthUserRepository>();
             services.AddScoped<IAuthUserService, AuthUserService>();
             services.AddScoped<ISecurityService, SecurityService>();
 
             services.AddDbContext<AuthDbContext>(options => options.UseSqlite(_configuration.GetConnectionString("AuthConnection")));
-            services.AddScoped<ITitleRepository,TitleRepository>();
-            services.AddScoped<ITitleService,TitleService>();
-            services.AddDbContext<PostContext>(options => options.UseSqlite("Data Source=main.Db"));
+            services.AddScoped<ITitleRepository, TitleRepository>();
+            services.AddScoped<ITitleService, TitleService>();
+
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IPostService, PostService>();
+
+            services.AddDbContext<PostContext>(options =>
+            {
+                options.UseSqlite("Data Source=main.db");
+                options.UseLoggerFactory(loggerFactory);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -111,6 +125,7 @@ namespace qwertygroup.WebApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "qwertygroup.WebApi v1"));
             }
+            #region postDbtestdata
             postContext.Database.EnsureDeleted();
             postContext.Database.EnsureCreated();
             postContext.bodies.Add(new BodyEntity
@@ -128,16 +143,21 @@ namespace qwertygroup.WebApi
                 Id = 3,
                 Text = "What's the whole point of being pretty on the outside when you’re so ugly on the inside?"
             });
-            postContext.titles.Add(new TitleEntity{
-                Id=1,
-                Text = "Existential crisis sucks"
+            postContext.titles.Add(new TitleEntity
+            {
+                Id = 1,
+                Text = "Pepe clap is strong"
             });
-            postContext.titles.Add(new TitleEntity{
-                Id=2,
+            postContext.titles.Add(new TitleEntity
+            {
+                Id = 2,
                 Text = "Potatoes ruin society"
             });
+            postContext.Add(new PostEntity { Id = 1, TitleId = 1, BodyId = 1, UserId = 1 });
+            postContext.Add(new PostEntity { Id = 2, TitleId = 2, BodyId=2, UserId = 1 });
             postContext.SaveChanges();
-            
+            #endregion
+
             new AuthDbSeeder(authDbContext, securityService).SeedDevelopment();
 
             app.UseHttpsRedirection();
@@ -152,6 +172,7 @@ namespace qwertygroup.WebApi
             {
                 endpoints.MapControllers();
             });
+            app.UseDeveloperExceptionPage();
         }
     }
 }

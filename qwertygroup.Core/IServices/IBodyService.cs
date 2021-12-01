@@ -9,5 +9,6 @@ namespace qwertygroup.Core.IServices
         Body CreateBody(string text);
         void DeleteBody(int id);
         Body UpdateBody(Body body);
+        Body GetBody(int id);
     }
 }
