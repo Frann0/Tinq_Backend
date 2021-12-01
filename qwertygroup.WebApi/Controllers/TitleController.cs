@@ -25,6 +25,12 @@ namespace qwertygroup.WebApi.Controllers
                 newTitle => new TitleDto { Text = newTitle.Text }
             ).ToList());
         }
+        
+        [HttpGet("{id}")]
+        public ActionResult<TitleDto> getTitle(int id){
+            _titleService.GetTitle(id);
+            return Ok();
+        }
 
         [HttpPost]
         public ActionResult<Title> CreateTitle([FromBody] TitleDto titleDto)

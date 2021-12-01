@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using qwertygroup.Core.IServices;
 using qwertygroup.Core.Models;
+using System;
 
 namespace qwertygroup.Domain.Services
 {
@@ -16,7 +18,26 @@ namespace qwertygroup.Domain.Services
         
         public List<Body> GetBodies()
         {
-            return _bodyRepository.GetBodies();
+            return _bodyRepository.GetBodies().ToList();
+        }
+        public Body GetBody(int id)
+        {
+            if (id <= 0)
+            {
+                string message = "Id must be greater than 0!";
+                throw new InvalidOperationException(message);
+            }
+            else
+            {
+                try
+                {
+                    return _bodyRepository.GetBodies().First(b => b.Id == id);
+                }
+                catch (Exception e)
+                {
+                    throw new InvalidOperationException($"No title with given id: {id}");
+                }
+            }
         }
 
         public Body CreateBody(string text)
@@ -31,15 +52,15 @@ namespace qwertygroup.Domain.Services
             if (id <= 0)
             {
                 string message = "Id must be greater than 0!";
-                throw new System.InvalidOperationException(message);
+                throw new InvalidOperationException(message);
             }
             try
             {
                 _bodyRepository.DeleteBody(id);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                throw new System.InvalidOperationException($"No body with given id: {id}");
+                throw new InvalidOperationException($"No body with given id: {id}");
             }
         }
 
@@ -60,5 +81,7 @@ namespace qwertygroup.Domain.Services
                 throw new System.InvalidOperationException($"No body with given id {body.Id}");
             }
         }
+
+        
     }
 }

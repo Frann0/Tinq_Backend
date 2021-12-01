@@ -98,7 +98,7 @@ namespace qwertygroup.Domain.Test.Services
         }
 
 
-         [Theory]
+        [Theory]
         [InlineData(-3)]
         [InlineData(3)]
         public void Delete_Body_Method_Throws_Exception_When_Id_Is_Invalid(int idToDelete)
@@ -106,7 +106,7 @@ namespace qwertygroup.Domain.Test.Services
             //Setup the mock repository and define methods
             _mockBodyRepository.Setup(r => r.GetBodies()).Returns(_repoList);
             string message = "";
-            if(idToDelete<=0)
+            if (idToDelete <= 0)
                 message = "Id must be greater than 0!";
             else
                 message = $"No body with given id: {idToDelete}";
@@ -121,7 +121,7 @@ namespace qwertygroup.Domain.Test.Services
             });
 
             string resMessage = Assert.Throws<System.InvalidOperationException>(() => _bodyService.DeleteBody(idToDelete)).Message;
-            Assert.Equal(resMessage,message);
+            Assert.Equal(resMessage, message);
         }
 
         [Fact]
@@ -166,6 +166,15 @@ namespace qwertygroup.Domain.Test.Services
             });
 
             Assert.Throws<System.InvalidOperationException>(() => _bodyService.UpdateBody(body));
+        }
+
+        [Theory]
+        [InlineData(2)]
+        [InlineData(1)]
+        public void GetBody_Exists_AndReturns_TheCorrectBody(int id)
+        {
+            _mockBodyRepository.Setup(r => r.GetBodies()).Returns(_expected);
+            Assert.Equal(_bodyService.GetBody(id), _expected[id - 1]);
         }
     }
 }

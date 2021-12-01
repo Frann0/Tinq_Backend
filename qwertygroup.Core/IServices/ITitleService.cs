@@ -9,5 +9,6 @@ namespace qwertygroup.Core.IServices
         Title CreateTitle(string text);
         void DeleteTitle(int id);
         Title UpdateTitle(Title title);
+        Title GetTitle(int id);
     }
 }
