@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using qwertygroup.Core.IServices;
 using qwertygroup.Core.Models;
 using qwertygroup.Domain.IRepositories;
@@ -19,7 +20,27 @@ namespace qwertygroup.Domain.Services
 
         public List<Title> GetTitles()
         {
-            return _titleRepository.GetTitles();
+            return _titleRepository.GetTitles().ToList();
+        }
+
+        public Title GetTitle(int id)
+        {
+            if (id <= 0)
+            {
+                string message = "Id must be greater than 0!";
+                throw new System.InvalidOperationException(message);
+            }
+            else
+            {
+                try
+                {
+                    return _titleRepository.GetTitles().First(t => t.Id == id);
+                }
+                catch (Exception e)
+                {
+                    throw new System.InvalidOperationException($"No title with given id: {id}");
+                }
+            }
         }
 
         public Title CreateTitle(string text)
@@ -66,5 +87,6 @@ namespace qwertygroup.Domain.Services
                 throw new System.InvalidOperationException($"No body with given id {title.Id}");
             }
         }
+
     }
 }

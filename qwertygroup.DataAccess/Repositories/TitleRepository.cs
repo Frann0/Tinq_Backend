@@ -16,7 +16,7 @@ namespace qwertygroup.DataAccess.Repositories
             _context = context;
         }
 
-        public List<Title> GetTitles()
+        public IEnumerable<Title> GetTitles()
         {
             return _context.titles.Select(title => new Title { Id = title.Id, Text = title.Text }).ToList();
         }
@@ -58,5 +58,6 @@ namespace qwertygroup.DataAccess.Repositories
                 throw;
             }
         }
+
     }
 }

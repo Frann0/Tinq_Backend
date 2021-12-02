@@ -38,11 +38,11 @@ namespace qwertygroup.DataAccess.Repositories
             }
         }
 
-        public List<Body> GetBodies()
+        public IEnumerable<Body> GetBodies()
         {
             return _context.bodies.Select(
                 body => new Body { Id = body.Id, Text = body.Text }
-            ).ToList();
+            );
         }
 
         public Body UpdateBody(Body body)

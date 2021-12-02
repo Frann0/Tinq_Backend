@@ -120,5 +120,14 @@ namespace qwertygroup.Domain.Test.Services
 
             Assert.True(_repoList.First(b => b.Id == updatedTitle.Id).Text == updatedTitle.Text);
         }
+
+        [Theory]
+        [InlineData(2)]
+        [InlineData(1)]
+        public void GetTitle_Exists_AndReturns_TheCorrectTitle(int id)
+        {
+            _mockTitleRepository.Setup(r => r.GetTitles()).Returns(_expected);
+            Assert.Equal(_titleService.GetTitle(id), _expected[id - 1]);
+        }
     }
 }

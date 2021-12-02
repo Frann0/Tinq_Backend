@@ -19,13 +19,18 @@ namespace qwertygroup.WebApi.Controllers
             _bodyService = bodyService;
         }
         
-        [Authorize]
+        //[Authorize]
         [HttpGet]
-        public ActionResult<IEnumerable<BodyDto>> getAllBodies()
+        public ActionResult<IEnumerable<BodyDto>> GetAllBodies()
         {
             return Ok(_bodyService.GetBodies().Select(
                 newBody => new BodyDto { Text = newBody.Text }
                 ).ToList());
+        }
+        [HttpGet("{id}")]
+        public ActionResult<TitleDto> GetBody(int id){
+            _bodyService.GetBody(id);
+            return Ok();
         }
 
         [HttpPost]

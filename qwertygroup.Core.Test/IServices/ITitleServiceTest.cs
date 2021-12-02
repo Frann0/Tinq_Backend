@@ -52,5 +52,13 @@ namespace qwertygroup.Core.Test.IServices
             Title title = new Title { Text = "some title" };
             mock.Setup(r => r.UpdateTitle(title));
         }
+         [Fact]
+        public void Get_Title_Method_Exists(){
+            var mock = new Mock<ITitleService>();
+            Title title = new Title { Id=1,Text = "some title" };
+            mock.Setup(r => r.GetTitle(title.Id)
+            ).Returns(title);
+            Assert.IsType<Title>(mock.Object.GetTitle(title.Id));
+        }
     }
 }
