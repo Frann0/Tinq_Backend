@@ -121,7 +121,7 @@ namespace qwertygroup.WebApi
 
             services.AddScoped<IAuthUserRepository, AuthUserRepository>();
             services.AddScoped<IAuthUserService, AuthUserService>();
-            services.AddScoped<ISecurityService, SecurityService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddDbContext<AuthDbContext>(options => options.UseSqlite(_configuration.GetConnectionString("AuthConnection")));
 
@@ -136,15 +136,13 @@ namespace qwertygroup.WebApi
                 options.UseSqlite("Data Source=main.db");
                 options.UseLoggerFactory(loggerFactory);
             });
-            services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<AuthDbContext>();
-            
+
             services.AddDbContext<PostContext>(options => options.UseSqlite("Data Source=main.db"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PostContext postContext,
-            AuthDbContext authDbContext, ISecurityService securityService, UserManager<IdentityUser> userManager)
+            AuthDbContext authDbContext, IAuthService authService)
         {
             if (env.IsDevelopment())
             {
@@ -187,7 +185,7 @@ namespace qwertygroup.WebApi
 
             //new AuthDbSeeder(authDbContext, securityService).SeedDevelopment();
             
-            new AuthDbSeeder(authDbContext, securityService, userManager).SeedDevelopment();
+            new AuthDbSeeder(authDbContext, authService).SeedDevelopment();
             app.UseCors("Dev-cors");
             app.UseHttpsRedirection();
             

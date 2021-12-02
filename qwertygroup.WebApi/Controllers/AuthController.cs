@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Nito.AsyncEx;
 using qwertygroup.Security;
+using qwertygroup.Security.Models;
 using qwertygroup.WebApi.Dtos;
 
 namespace qwertygroup.WebApi.Controllers
@@ -17,31 +18,26 @@ namespace qwertygroup.WebApi.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ISecurityService _securityService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IAuthService _authService;
 
-
-        public AuthController(ISecurityService securityService, UserManager<IdentityUser> userManager)
+        public AuthController(IAuthService authService)
         {
-            _securityService = securityService;
-            _userManager = userManager;
+            _authService = authService;
         }
        
         [AllowAnonymous]
         [HttpPost(nameof(Login))]
-        public async Task<ActionResult<TokenDto>> Login([FromBody] LoginDto loginDto)
+        public ActionResult<TokenDto> Login([FromBody] LoginDto loginDto)
         {
-            IdentityUser identityUser = await _userManager.FindByNameAsync(loginDto.Username);
-            var result =
-                _userManager.PasswordHasher.VerifyHashedPassword(identityUser, identityUser.PasswordHash,
-                    loginDto.Password);
+            var authUser = _authService.FindUser(loginDto.Username);
+            
 
-            if (result == PasswordVerificationResult.Failed)
+            if (authUser == null)
             {
                 return BadRequest("Login failed");
             }
 
-            var token = _securityService.GenerateJwtToken(loginDto.Username, loginDto.Password);
+            var token = _authService.GenerateJwtToken(loginDto.Username, loginDto.Password);
             return new TokenDto()
             {
                 Token = token.Token,
@@ -66,17 +62,11 @@ namespace qwertygroup.WebApi.Controllers
                 Email = registerDto.Email
             };
             
-            var result = _userManager.CreateAsync(identityUser, registerDto.Password).Result;
+            var user = _authService.CreateUser(identityUser, registerDto.Password);
 
-            if (!result.Succeeded)
+            if (user != null)
             {
-                var dictionary = new ModelStateDictionary();
-                foreach (var error in result.Errors)
-                {
-                    dictionary.AddModelError(error.Code, error.Description);
-                }
-
-                return new BadRequestObjectResult(new{Message = "User Registration Failed", Errors = dictionary});
+                return BadRequest("User Registration Failed");
             }
 
             return Ok("User Registration Successful");

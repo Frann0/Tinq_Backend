@@ -13,16 +13,11 @@ namespace qwertygroup.Security
         {
             _authDbContext = authDbContext;
         }
-        
-        
-        public AuthUser FindByUsernameAndPassword(string username, string password)
-        {
-            return null;
-        }
 
         public AuthUser FindUser(string username)
         {
-            /*
+            // TODO include permissions
+            
             var authUserEntity = _authDbContext.AuthUsers.FirstOrDefault(user =>
                 user.Username.Equals(username));
             
@@ -33,10 +28,16 @@ namespace qwertygroup.Security
                 Id = authUserEntity.Id,
                 Username = authUserEntity.Username,
                 HashedPassword = authUserEntity.HashedPassword,
-                Salt = Encoding.ASCII.GetBytes(authUserEntity.Salt)
+                Salt = authUserEntity.Salt
             };
-            */
-            return null;
         }
+        
+        // TODO CreateUser
+        
+        // TODO UpdateUser
+        
+        // TODO AddPermission
+        
+        // TODO RemovePermission
     }
 }
