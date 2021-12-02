@@ -12,6 +12,8 @@ namespace qwertygroup.Domain.Services
         private readonly IPostRepository _postRepository;
 
         public PostService(IPostRepository postRepository){
+            if(postRepository==null)
+                throw new MissingFieldException("PostService must hate a PostRepository!");
             _postRepository=postRepository;
         }
         public List<Post> GetAllPosts()
