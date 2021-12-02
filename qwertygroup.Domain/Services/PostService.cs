@@ -9,18 +9,29 @@ namespace qwertygroup.Domain.Services
 {
     public class PostService : IPostService
     {
-        private readonly IPostRepository _mockPostRepository;
+        private readonly IPostRepository _postRepository;
 
-        public PostService(IPostRepository mockPostRepository)
-        {
-           if(mockPostRepository==null)
-           throw new System.MissingFieldException("PostService must hate a PostRepository!");
-            _mockPostRepository = mockPostRepository;
+        public PostService(IPostRepository postRepository){
+            _postRepository=postRepository;
         }
-
         public List<Post> GetAllPosts()
         {
-            return _mockPostRepository.GetAllPosts().ToList();
+            return _postRepository.GetAllPosts().ToList();
+        }
+
+        public Post GetPost(int id)
+        {
+           return _postRepository.GetAllPosts().First(p=>p.Id==id);
+        }
+
+        public Post CreatePost(Post post)
+        {
+            return _postRepository.CreatePost(post);
+        }
+
+        public void DeletePost(Post post)
+        {
+            _postRepository.DeletePost(post);
         }
     }
 }
