@@ -124,11 +124,12 @@ namespace qwertygroup.WebApi
             services.AddScoped<ITitleRepository,TitleRepository>();
             services.AddScoped<ITitleService,TitleService>();
             services.AddDbContext<PostContext>(options => options.UseSqlite("Data Source=main.Db"));
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, PostContext postContext,
-            AuthDbContext authDbContext, ISecurityService securityService, UserManager<IdentityUser> userManager)
+            AuthDbContext authDbContext, ISecurityService securityService, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -163,7 +164,7 @@ namespace qwertygroup.WebApi
             });
             postContext.SaveChanges();
             
-            new AuthDbSeeder(authDbContext, securityService, userManager).SeedDevelopment();
+            new AuthDbSeeder(authDbContext, securityService, userManager, roleManager).SeedDevelopment();
             app.UseCors("Dev-cors");
             app.UseHttpsRedirection();
             

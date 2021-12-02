@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using qwertygroup.Core.IServices;
 using qwertygroup.Core.Models;
@@ -18,6 +19,7 @@ namespace qwertygroup.WebApi.Controllers
             _titleService = titleService;
         }
 
+        
         [HttpGet]
         public ActionResult<IEnumerable<TitleDto>> getAllTitles()
         {
