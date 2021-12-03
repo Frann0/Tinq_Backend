@@ -11,6 +11,7 @@ using Nito.AsyncEx;
 using qwertygroup.Security;
 using qwertygroup.Security.Models;
 using qwertygroup.WebApi.Dtos;
+using qwertygroup.WebApi.PolicyHandlers;
 
 namespace qwertygroup.WebApi.Controllers
 {
@@ -47,22 +48,22 @@ namespace qwertygroup.WebApi.Controllers
         }
 
         
-
+        [AllowAnonymous]
         [HttpPost(nameof(Register))]
         public ActionResult Register([FromBody] RegisterDto registerDto)
         {
-            if (!ModelState.IsValid || registerDto == null)
+            if (registerDto == null) // add Modelstate ?
             {
                 return BadRequest("User Registration Failed");
             }
 
-            var identityUser = new IdentityUser()
+            var authUser = new AuthUser()
             {
-                UserName = registerDto.Username,
+                Username = registerDto.Username,
                 Email = registerDto.Email
             };
             
-            var user = _authService.CreateUser(identityUser, registerDto.Password);
+            var user = _authService.CreateUser(authUser, registerDto.Password);
 
             if (user != null)
             {
@@ -72,11 +73,32 @@ namespace qwertygroup.WebApi.Controllers
             return Ok("User Registration Successful");
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(nameof(AdminUserHandler))]
         [HttpGet]
-        public ActionResult Oink()
+        public ActionResult<List<UserDto>> GetAllUsers()
         {
-            return Ok("Oink!");
+            return Ok("Auth works!");
         }
+        
+        // TODO DeleteUser
+        [Authorize(nameof(RegisteredUserHandler))]
+        [HttpDelete]
+        public ActionResult DeleteUser([FromBody] UserDto userDto)
+        {
+            var user = _authService.FindUser(userDto.Username);
+            return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
+        }
+        
+        // TODO EditPermissions
+        [Authorize(nameof(AdminUserHandler))]
+        [HttpPut]
+        public ActionResult<UserDto> EditUserPermissions()
+        {
+            return null;
+        }
+
+        // TODO BanUser
+        
+        
     }
 }

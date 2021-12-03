@@ -30,7 +30,8 @@ namespace qwertygroup.Security
             {
                 Username = "jjj",
                 Salt = salt,
-                HashedPassword = _authService.HashedPassword(password, salt)
+                HashedPassword = _authService.HashedPassword(password, salt),
+                DbUserId = 1
             };
             _ctx.AuthUsers.Add(authUser);
             _ctx.SaveChanges();

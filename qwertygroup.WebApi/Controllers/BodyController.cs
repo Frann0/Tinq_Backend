@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using qwertygroup.Core.IServices;
 using qwertygroup.Core.Models;
 using qwertygroup.WebApi.Dtos;
+using qwertygroup.WebApi.PolicyHandlers;
 
 namespace qwertygroup.WebApi.Controllers
 {
@@ -19,7 +20,7 @@ namespace qwertygroup.WebApi.Controllers
             _bodyService = bodyService;
         }
         
-        //[Authorize]
+        [Authorize(nameof(RegisteredUserHandler))]
         [HttpGet]
         public ActionResult<IEnumerable<BodyDto>> GetAllBodies()
         {

@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.Models;
 
@@ -31,7 +34,20 @@ namespace qwertygroup.Security
                 Salt = authUserEntity.Salt
             };
         }
-        
+
+        public List<Permission> GetUserPermissions(int id)
+        {
+            return _authDbContext.UserPermissions.Include(up => up.Permission)
+                .Where(up => up.UserId == id)
+                .Select(up => up.Permission)
+                .ToList();
+        }
+
+        public bool DeleteUser(AuthUser user)
+        {
+            throw new System.NotImplementedException();
+        }
+
         // TODO CreateUser
         
         // TODO UpdateUser

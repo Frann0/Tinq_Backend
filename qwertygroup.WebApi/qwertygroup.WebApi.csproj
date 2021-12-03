@@ -16,7 +16,4 @@
     <ProjectReference Include="..\qwertygroup.Domain\qwertygroup.Domain.csproj" />
     <ProjectReference Include="..\qwertygroup.Security\qwertygroup.Security.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PolicyHandlers" />
-  </ItemGroup>
 </Project>
