@@ -1,10 +1,21 @@
 
+using qwertygroup.Core.Models;
+
 namespace qwertygroup.WebApi.Dtos
 {
     public class PostDto
     {
-        public string Title{get;set;}
-        public string Body{get;set;}
-        public int UserId{get;set;}        
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Body { get; set; }
+        public int UserId { get; set; }
+
+        public PostDto(Post post)
+        {
+            Id = post.Id;
+            Body = post.Body;
+            Title = post.Title;
+            UserId = post.UserId;
+        }
     }
 }
