@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings;
@@ -34,7 +36,9 @@ namespace qwertygroup.Security.Services
 
         public JwtToken GenerateJwtToken(string username, string password)
         {
-            if (!Authenticate(password, username))
+            var dbUser = _userRepository.FindUser(username);
+            
+            if (!Authenticate(dbUser, password))
                 return new JwtToken
                 {
                     Message = "User or Password not correct"
@@ -44,7 +48,10 @@ namespace qwertygroup.Security.Services
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(_configuration["JwtConfig:Issuer"],
                 _configuration["JwtConfig:Audience"],
-                null,
+                new[]
+                {
+                    new Claim("Id", dbUser.Id.ToString())
+                },
                 expires: DateTime.Now.AddMinutes(10),
                 signingCredentials: credentials);
             
@@ -56,12 +63,10 @@ namespace qwertygroup.Security.Services
 
         }
 
-        private bool Authenticate(string plainTextPassword, string username)
+        private bool Authenticate(AuthUser dbUser, string plainTextPassword)
         {
-            var dbUser = _userRepository.FindUser(username);
-            if (dbUser == null) return false;
-            
-            return HashedPassword(plainTextPassword, dbUser.Salt).Equals(dbUser.HashedPassword);
+            return dbUser != null && HashedPassword(plainTextPassword, dbUser.Salt)
+                .Equals(dbUser.HashedPassword);
         }
 
         public string HashedPassword(string plainTextPassword, byte[] userSalt)
@@ -89,9 +94,24 @@ namespace qwertygroup.Security.Services
             return _userRepository.FindUser(username);
         }
 
+        public AuthUser CreateUser(AuthUser identityUser, string registerDtoPassword)
+        {
+            throw new NotImplementedException();
+        }
+
         public AuthUser CreateUser(IdentityUser identityUser, string registerDtoPassword)
         {
             throw new NotImplementedException();
+        }
+
+        public List<Permission> GetPermissions(int id)
+        {
+            return _userRepository.GetUserPermissions(id);
+        }
+
+        public bool DeleteUser(AuthUser user)
+        {
+            return _userRepository.DeleteUser(user);
         }
     }
 }

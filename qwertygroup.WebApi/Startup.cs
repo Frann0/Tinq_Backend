@@ -22,6 +22,8 @@ using qwertygroup.Security.IAuthUserService;
 using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.Models;
 using qwertygroup.Security.Services;
+using qwertygroup.WebApi.Middleware;
+using qwertygroup.WebApi.PolicyHandlers;
 
 namespace qwertygroup.WebApi
 {
@@ -94,6 +96,12 @@ namespace qwertygroup.WebApi
                         ValidateLifetime = true
                     };
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(nameof(RegisteredUserHandler),
+                    policy => policy.Requirements.Add(new RegisteredUserHandler()));
+            });
             
             services.AddCors(options =>
             {
@@ -188,7 +196,7 @@ namespace qwertygroup.WebApi
             new AuthDbSeeder(authDbContext, authService).SeedDevelopment();
             app.UseCors("Dev-cors");
             app.UseHttpsRedirection();
-            
+            app.UseMiddleware<JwtMiddleware>();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using qwertygroup.Security.Models;
 
@@ -10,6 +11,8 @@ namespace qwertygroup.Security
         string HashedPassword(string password, byte[] salt);
         byte[] CreateSalt();
         AuthUser FindUser(string loginDtoUsername);
-        AuthUser CreateUser(IdentityUser identityUser, string registerDtoPassword);
+        AuthUser CreateUser(AuthUser identityUser, string registerDtoPassword);
+        List<Permission> GetPermissions(int id);
+        bool DeleteUser(AuthUser user);
     }
 }

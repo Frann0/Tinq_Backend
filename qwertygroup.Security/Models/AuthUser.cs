@@ -10,5 +10,6 @@ namespace qwertygroup.Security.Models
         public byte[] Salt { get; set; }
         public List<Permission> Type { get; set; }
         public int DbUserId { get; set; }
+        public string Email { get; set; }
     }
 }
