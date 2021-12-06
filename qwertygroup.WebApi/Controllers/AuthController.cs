@@ -11,6 +11,7 @@ using Nito.AsyncEx;
 using qwertygroup.Security;
 using qwertygroup.Security.Models;
 using qwertygroup.WebApi.Dtos;
+using qwertygroup.WebApi.Helpers;
 using qwertygroup.WebApi.PolicyHandlers;
 
 namespace qwertygroup.WebApi.Controllers
@@ -28,9 +29,12 @@ namespace qwertygroup.WebApi.Controllers
        
         [AllowAnonymous]
         [HttpPost(nameof(Login))]
-        public ActionResult<TokenDto> Login([FromBody] LoginDto loginDto)
+        public ActionResult<UserDto> Login([FromBody] LoginDto loginDto)
         {
-            var authUser = _authService.FindUser(loginDto.Username);
+            // validate
+            var result =  InputValidator(loginDto);
+            
+            var authUser = _authService.FindUser(loginDto.Email);
             
 
             if (authUser == null)
@@ -38,13 +42,18 @@ namespace qwertygroup.WebApi.Controllers
                 return BadRequest("Login failed");
             }
 
-            var token = _authService.GenerateJwtToken(loginDto.Username, loginDto.Password);
-            return new TokenDto()
+            var token = _authService.GenerateJwtToken(authUser, loginDto.Password);
+            return new UserDto()
             {
-                Token = token.Token,
-                Message = "Success!"
+                Username = authUser.Username,
+                Email = authUser.Email,
+                Permissions = authUser.Permissions,
+                Token = new TokenDto()
+                {
+                    Token = token.Token,
+                    Message = "Success!"
+                }
             };
-
         }
 
         
@@ -52,32 +61,30 @@ namespace qwertygroup.WebApi.Controllers
         [HttpPost(nameof(Register))]
         public ActionResult Register([FromBody] RegisterDto registerDto)
         {
-            if (registerDto == null) // add Modelstate ?
+            if (!ModelState.IsValid && registerDto == null) // add Modelstate ?
             {
                 return BadRequest("User Registration Failed");
             }
+            
+            // check email exist
 
             var authUser = new AuthUser()
             {
-                Username = registerDto.Username,
+                Username = UsernameGenerator.GenerateRandomUsername(),
                 Email = registerDto.Email
             };
             
             var user = _authService.CreateUser(authUser, registerDto.Password);
 
-            if (user != null)
-            {
-                return BadRequest("User Registration Failed");
-            }
-
-            return Ok("User Registration Successful");
+            return user ? Ok("Registration Succeeded!") : BadRequest("Registration Failed");
         }
 
         [Authorize(nameof(AdminUserHandler))]
         [HttpGet]
         public ActionResult<List<UserDto>> GetAllUsers()
         {
-            return Ok("Auth works!");
+            var users = _authService.GetAllUsers();
+            return null;
         }
         
         // TODO DeleteUser
@@ -98,7 +105,10 @@ namespace qwertygroup.WebApi.Controllers
         }
 
         // TODO BanUser
-        
-        
+
+        private bool InputValidator<T>(T input)
+        {
+            return ModelState.IsValid;
+        }
     }
 }

@@ -8,6 +8,7 @@ using System.Text.Encodings;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using qwertygroup.Security.IRepositories;
@@ -34,14 +35,12 @@ namespace qwertygroup.Security.Services
         
 
 
-        public JwtToken GenerateJwtToken(string username, string password)
+        public JwtToken GenerateJwtToken(AuthUser user, string password)
         {
-            var dbUser = _userRepository.FindUser(username);
-            
-            if (!Authenticate(dbUser, password))
+            if (!Authenticate(user, password))
                 return new JwtToken
                 {
-                    Message = "User or Password not correct"
+                    Message = "Email or Password not correct"
                 };
             
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"]));
@@ -50,7 +49,7 @@ namespace qwertygroup.Security.Services
                 _configuration["JwtConfig:Audience"],
                 new[]
                 {
-                    new Claim("Id", dbUser.Id.ToString())
+                    new Claim("Id", user.Id.ToString())
                 },
                 expires: DateTime.Now.AddMinutes(10),
                 signingCredentials: credentials);
@@ -94,9 +93,17 @@ namespace qwertygroup.Security.Services
             return _userRepository.FindUser(username);
         }
 
-        public AuthUser CreateUser(AuthUser identityUser, string registerDtoPassword)
+        public bool CreateUser(AuthUser user, string registerDtoPassword)
         {
-            throw new NotImplementedException();
+            var salt = CreateSalt();
+            var newUser = new AuthUser()
+            {
+                Username = user.Username,
+                Email = user.Email,
+                Salt = salt,
+                HashedPassword = HashedPassword(registerDtoPassword, salt)
+            };
+            return _userRepository.CreateUser(newUser);
         }
 
         public AuthUser CreateUser(IdentityUser identityUser, string registerDtoPassword)
@@ -112,6 +119,11 @@ namespace qwertygroup.Security.Services
         public bool DeleteUser(AuthUser user)
         {
             return _userRepository.DeleteUser(user);
+        }
+
+        public ActionResult<List<AuthUser>> GetAllUsers()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using qwertygroup.Security.Entities;
 using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.Models;
 
@@ -17,21 +19,21 @@ namespace qwertygroup.Security
             _authDbContext = authDbContext;
         }
 
-        public AuthUser FindUser(string username)
+        public AuthUser FindUser(string email)
         {
-            // TODO include permissions
-            
             var authUserEntity = _authDbContext.AuthUsers.FirstOrDefault(user =>
-                user.Username.Equals(username));
+                user.Email.Equals(email));
             
             if (authUserEntity == null) return null;
 
             return new AuthUser()
             {
                 Id = authUserEntity.Id,
+                Email = authUserEntity.Email,
                 Username = authUserEntity.Username,
                 HashedPassword = authUserEntity.HashedPassword,
-                Salt = authUserEntity.Salt
+                Salt = authUserEntity.Salt,
+                Permissions = GetUserPermissions(authUserEntity.Id)
             };
         }
 
@@ -45,10 +47,23 @@ namespace qwertygroup.Security
 
         public bool DeleteUser(AuthUser user)
         {
-            throw new System.NotImplementedException();
+            var result = _authDbContext.AuthUsers.Remove(user);
+            return true;
         }
 
-        // TODO CreateUser
+        public bool CreateUser(AuthUser newUser)
+        {
+            var user = new AuthUser()
+            {
+                Username = newUser.Username,
+                Email = newUser.Email,
+                Salt = newUser.Salt,
+                HashedPassword = newUser.HashedPassword
+            };
+            
+            _authDbContext.AuthUsers.Add(user);
+            return _authDbContext.SaveChanges() > 0;
+        }
         
         // TODO UpdateUser
         
