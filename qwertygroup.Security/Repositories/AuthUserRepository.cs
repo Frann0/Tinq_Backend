@@ -19,16 +19,17 @@ namespace qwertygroup.Security
             _authDbContext = authDbContext;
         }
 
-        public AuthUser FindUser(string username)
+        public AuthUser FindUser(string email)
         {
             var authUserEntity = _authDbContext.AuthUsers.FirstOrDefault(user =>
-                user.Username.Equals(username));
+                user.Email.Equals(email));
             
             if (authUserEntity == null) return null;
 
             return new AuthUser()
             {
                 Id = authUserEntity.Id,
+                Email = authUserEntity.Email,
                 Username = authUserEntity.Username,
                 HashedPassword = authUserEntity.HashedPassword,
                 Salt = authUserEntity.Salt,

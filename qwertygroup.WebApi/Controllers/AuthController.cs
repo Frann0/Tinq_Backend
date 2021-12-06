@@ -32,8 +32,9 @@ namespace qwertygroup.WebApi.Controllers
         public ActionResult<UserDto> Login([FromBody] LoginDto loginDto)
         {
             // validate
+            var result =  InputValidator(loginDto);
             
-            var authUser = _authService.FindUser(loginDto.Username);
+            var authUser = _authService.FindUser(loginDto.Email);
             
 
             if (authUser == null)
@@ -41,7 +42,7 @@ namespace qwertygroup.WebApi.Controllers
                 return BadRequest("Login failed");
             }
 
-            var token = _authService.GenerateJwtToken(loginDto.Username, loginDto.Password);
+            var token = _authService.GenerateJwtToken(authUser, loginDto.Password);
             return new UserDto()
             {
                 Username = authUser.Username,
@@ -104,7 +105,10 @@ namespace qwertygroup.WebApi.Controllers
         }
 
         // TODO BanUser
-        
-        
+
+        private bool InputValidator<T>(T input)
+        {
+            return ModelState.IsValid;
+        }
     }
 }
