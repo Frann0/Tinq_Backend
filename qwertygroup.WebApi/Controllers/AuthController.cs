@@ -92,24 +92,30 @@ namespace qwertygroup.WebApi.Controllers
             return users;
         }
         
-        // TODO DeleteUser
+        
         [Authorize(nameof(RegisteredUserHandler))]
         [HttpDelete]
-        public ActionResult DeleteUser([FromBody] UserDto userDto)
+        public ActionResult DeleteProfile([FromBody] UserDto userDto)
         {
             var user = _authService.FindUser(userDto.Username);
             return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
         }
         
-        // TODO EditPermissions
         [Authorize(nameof(AdminUserHandler))]
-        [HttpPut]
-        public ActionResult<UserDto> EditUserPermissions()
+        [HttpDelete]
+        public ActionResult<bool> AdminDeleteUser([FromBody] UserDto userDto)
+        {
+            var user = _authService.FindUser(userDto.Username);
+            return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
+        }
+        
+        [Authorize(nameof(AdminUserHandler))]
+        [HttpPut()]
+        public ActionResult<bool> UpdateUserPermissions()
         {
             return null;
         }
 
-        // TODO BanUser
 
         private bool InputValidator<T>(T input)
         {

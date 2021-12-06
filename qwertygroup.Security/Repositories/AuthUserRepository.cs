@@ -54,6 +54,8 @@ namespace qwertygroup.Security
             }).ToList();
         }
 
+        
+
         public bool DeleteUser(AuthUser user)
         {
             var result = _authDbContext.AuthUsers.Remove(user);
