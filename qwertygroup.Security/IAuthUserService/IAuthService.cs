@@ -15,6 +15,6 @@ namespace qwertygroup.Security
         bool CreateUser(AuthUser identityUser, string registerDtoPassword);
         List<Permission> GetPermissions(int id);
         bool DeleteUser(AuthUser user);
-        ActionResult<List<AuthUser>> GetAllUsers();
+        List<AuthUser> GetAllUsers();
     }
 }
