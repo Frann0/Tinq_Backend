@@ -79,12 +79,17 @@ namespace qwertygroup.WebApi.Controllers
             return user ? Ok("Registration Succeeded!") : BadRequest("Registration Failed");
         }
 
-        [Authorize(nameof(AdminUserHandler))]
-        [HttpGet]
-        public ActionResult<List<UserDto>> GetAllUsers()
+        
+        [HttpGet("allusers")]
+        public ActionResult<List<UserListDto>> GetAllUsers()
         {
-            var users = _authService.GetAllUsers();
-            return null;
+            var users = _authService.GetAllUsers().Select(u => new UserListDto()
+            {
+                Username = u.Username,
+                Email = u.Email,
+                Id = u.Id
+            }).ToList();
+            return users;
         }
         
         // TODO DeleteUser

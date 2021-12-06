@@ -123,7 +123,7 @@ namespace qwertygroup.Security.Services
 
         public List<AuthUser> GetAllUsers()
         {
-            return null;
+            return _userRepository.GetAllUsers();
         }
     }
 }
