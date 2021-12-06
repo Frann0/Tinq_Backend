@@ -8,7 +8,7 @@ namespace qwertygroup.Security
 {
     public interface IAuthService
     {
-        JwtToken GenerateJwtToken(string username, string password);
+        JwtToken GenerateJwtToken(AuthUser user, string password);
         string HashedPassword(string password, byte[] salt);
         byte[] CreateSalt();
         AuthUser FindUser(string loginDtoUsername);

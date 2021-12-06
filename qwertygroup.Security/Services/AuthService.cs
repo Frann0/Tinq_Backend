@@ -35,14 +35,12 @@ namespace qwertygroup.Security.Services
         
 
 
-        public JwtToken GenerateJwtToken(string username, string password)
+        public JwtToken GenerateJwtToken(AuthUser user, string password)
         {
-            var dbUser = _userRepository.FindUser(username);
-            
-            if (!Authenticate(dbUser, password))
+            if (!Authenticate(user, password))
                 return new JwtToken
                 {
-                    Message = "User or Password not correct"
+                    Message = "Email or Password not correct"
                 };
             
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"]));
@@ -51,7 +49,7 @@ namespace qwertygroup.Security.Services
                 _configuration["JwtConfig:Audience"],
                 new[]
                 {
-                    new Claim("Id", dbUser.Id.ToString())
+                    new Claim("Id", user.Id.ToString())
                 },
                 expires: DateTime.Now.AddMinutes(10),
                 signingCredentials: credentials);
