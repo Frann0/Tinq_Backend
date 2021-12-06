@@ -11,6 +11,8 @@ namespace qwertygroup.Security.IRepositories
         bool DeleteUser(AuthUser user);
 
         bool CreateUser(AuthUser newUser);
+        IEnumerable<UserPermission> GetAllUserPermissions();
+
         List<AuthUser> GetAllUsers();
         
     }

@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using qwertygroup.Security.Entities;
 using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.Models;
 
@@ -23,7 +19,7 @@ namespace qwertygroup.Security
         {
             var authUserEntity = _authDbContext.AuthUsers.FirstOrDefault(user =>
                 user.Email.Equals(email));
-            
+
             if (authUserEntity == null) return null;
 
             return new AuthUser()
@@ -71,17 +67,37 @@ namespace qwertygroup.Security
                 Salt = newUser.Salt,
                 HashedPassword = newUser.HashedPassword
             };
-            
+
             _authDbContext.AuthUsers.Add(user);
             return _authDbContext.SaveChanges() > 0;
         }
 
-        
+        public IEnumerable<UserPermission> GetAllUserPermissions()
+        {
+            var query = from userPermission in _authDbContext.UserPermissions
+                        join user in _authDbContext.AuthUsers on userPermission.UserId equals user.Id
+                        select new UserPermission
+                        {
+                            UserId=userPermission.UserId,
+                            User=user,
+                            PermissionId=userPermission.PermissionId
+                        };
+            var query2 =    from userPermission in query
+                            join permission in _authDbContext.Permissions on userPermission.PermissionId equals permission.Id
+                            select new UserPermission{
+                                UserId=userPermission.UserId,
+                                User=userPermission.User,
+                                PermissionId=userPermission.PermissionId,
+                                Permission=permission                                
+                            };
+            return query2;    
+
+        }
 
         // TODO UpdateUser
-        
+
         // TODO AddPermission
-        
+
         // TODO RemovePermission
     }
 }
