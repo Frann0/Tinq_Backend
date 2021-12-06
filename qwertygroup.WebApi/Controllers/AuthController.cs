@@ -59,7 +59,7 @@ namespace qwertygroup.WebApi.Controllers
         
         [AllowAnonymous]
         [HttpPost(nameof(Register))]
-        public ActionResult Register([FromBody] RegisterDto registerDto)
+        public ActionResult<bool> Register([FromBody] RegisterDto registerDto)
         {
             if (!ModelState.IsValid && registerDto == null) // add Modelstate ?
             {
@@ -76,35 +76,46 @@ namespace qwertygroup.WebApi.Controllers
             
             var user = _authService.CreateUser(authUser, registerDto.Password);
 
-            return user ? Ok("Registration Succeeded!") : BadRequest("Registration Failed");
+            return user;
         }
 
-        [Authorize(nameof(AdminUserHandler))]
-        [HttpGet]
-        public ActionResult<List<UserDto>> GetAllUsers()
+        
+        [HttpGet("allusers")]
+        public ActionResult<List<UserListDto>> GetAllUsers()
         {
-            var users = _authService.GetAllUsers();
-            return null;
+            var users = _authService.GetAllUsers().Select(u => new UserListDto()
+            {
+                Username = u.Username,
+                Email = u.Email,
+                Id = u.Id
+            }).ToList();
+            return users;
         }
         
-        // TODO DeleteUser
+        
         [Authorize(nameof(RegisteredUserHandler))]
-        [HttpDelete]
-        public ActionResult DeleteUser([FromBody] UserDto userDto)
+        [HttpDelete("deleteprofile")]
+        public ActionResult DeleteProfile([FromBody] UserDto userDto)
         {
             var user = _authService.FindUser(userDto.Username);
             return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
         }
         
-        // TODO EditPermissions
         [Authorize(nameof(AdminUserHandler))]
-        [HttpPut]
-        public ActionResult<UserDto> EditUserPermissions()
+        [HttpDelete("deleteuser")]
+        public ActionResult<bool> AdminDeleteUser([FromBody] UserDto userDto)
+        {
+            var user = _authService.FindUser(userDto.Username);
+            return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
+        }
+        
+        [Authorize(nameof(AdminUserHandler))]
+        [HttpPut()]
+        public ActionResult<bool> UpdateUserPermissions()
         {
             return null;
         }
 
-        // TODO BanUser
 
         private bool InputValidator<T>(T input)
         {

@@ -13,5 +13,7 @@ namespace qwertygroup.Security.IRepositories
         bool CreateUser(AuthUser newUser);
         IEnumerable<UserPermission> GetAllUserPermissions();
 
+        List<AuthUser> GetAllUsers();
+        
     }
 }

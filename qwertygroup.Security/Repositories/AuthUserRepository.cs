@@ -40,11 +40,22 @@ namespace qwertygroup.Security
                 .Select(up => up.Permission)
                 .ToList();
         }
+        public List<AuthUser> GetAllUsers()
+        {
+            return _authDbContext.AuthUsers.Select(u => new AuthUser()
+            {
+                Username = u.Username,
+                Email = u.Email,
+                Id = u.Id
+            }).ToList();
+        }
+
+        
 
         public bool DeleteUser(AuthUser user)
         {
             var result = _authDbContext.AuthUsers.Remove(user);
-            return true;
+            return result != null;
         }
 
         public bool CreateUser(AuthUser newUser)
