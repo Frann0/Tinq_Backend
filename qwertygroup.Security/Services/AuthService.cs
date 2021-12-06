@@ -121,7 +121,7 @@ namespace qwertygroup.Security.Services
             return _userRepository.DeleteUser(user);
         }
 
-        public ActionResult<List<AuthUser>> GetAllUsers()
+        public List<AuthUser> GetAllUsers()
         {
             return null;
         }
