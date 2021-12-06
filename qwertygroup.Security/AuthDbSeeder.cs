@@ -29,6 +29,7 @@ namespace qwertygroup.Security
             var authUser = new AuthUser()
             {
                 Username = "jjj",
+                Email = "j@j.dk",
                 Salt = salt,
                 HashedPassword = _authService.HashedPassword(password, salt),
                 DbUserId = 1
@@ -64,8 +65,6 @@ namespace qwertygroup.Security
         {
             _ctx.Database.EnsureDeleted();
             _ctx.Database.EnsureCreated();
-
-            
         }
         
     }

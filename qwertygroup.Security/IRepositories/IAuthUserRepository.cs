@@ -9,5 +9,7 @@ namespace qwertygroup.Security.IRepositories
         AuthUser FindUser(string username);
         List<Permission> GetUserPermissions(int id);
         bool DeleteUser(AuthUser user);
+
+        bool CreateUser(AuthUser newUser);
     }
 }

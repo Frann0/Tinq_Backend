@@ -8,7 +8,7 @@ namespace qwertygroup.Security.Models
         public string Username { get; set; }
         public string HashedPassword { get; set; }
         public byte[] Salt { get; set; }
-        public List<Permission> Type { get; set; }
+        public List<Permission> Permissions { get; set; }
         public int DbUserId { get; set; }
         public string Email { get; set; }
     }

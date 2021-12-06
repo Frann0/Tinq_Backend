@@ -8,6 +8,7 @@ using System.Text.Encodings;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using qwertygroup.Security.IRepositories;
@@ -94,9 +95,17 @@ namespace qwertygroup.Security.Services
             return _userRepository.FindUser(username);
         }
 
-        public AuthUser CreateUser(AuthUser identityUser, string registerDtoPassword)
+        public bool CreateUser(AuthUser user, string registerDtoPassword)
         {
-            throw new NotImplementedException();
+            var salt = CreateSalt();
+            var newUser = new AuthUser()
+            {
+                Username = user.Username,
+                Email = user.Email,
+                Salt = salt,
+                HashedPassword = HashedPassword(registerDtoPassword, salt)
+            };
+            return _userRepository.CreateUser(newUser);
         }
 
         public AuthUser CreateUser(IdentityUser identityUser, string registerDtoPassword)
@@ -112,6 +121,11 @@ namespace qwertygroup.Security.Services
         public bool DeleteUser(AuthUser user)
         {
             return _userRepository.DeleteUser(user);
+        }
+
+        public ActionResult<List<AuthUser>> GetAllUsers()
+        {
+            throw new NotImplementedException();
         }
     }
 }
