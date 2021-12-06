@@ -24,7 +24,7 @@ namespace qwertygroup.WebApi.Controllers
             _titleService = titleService;
         }
 
-        [HttpGet]
+        [HttpGet("/posts")]
         public ActionResult<IEnumerable<PostDto>> GetAllPosts()
         {
             return Ok(_postService.GetAllPosts().Select(
@@ -39,7 +39,7 @@ namespace qwertygroup.WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<PostDto> CreatePost(String titleText, String bodyText, int userId)
+        public ActionResult<PostDto> CreatePost([FromQuery]String titleText, String bodyText, int userId)
         {
             Body body = _bodyService.CreateBody(bodyText);
             Title title = _titleService.CreateTitle(titleText);
@@ -54,8 +54,9 @@ namespace qwertygroup.WebApi.Controllers
             return Ok(new PostDto(post));
         }
 
+//TODO SHOULD BE AUTHORIZED
         [HttpPatch]
-        public ActionResult<PostDto> UpdatePost(String titleText, String bodyText, int postId)
+        public ActionResult<PostDto> UpdatePost([FromQuery]String titleText, String bodyText, int postId)
         {
             Post post = _postService.GetPost(postId);
             _titleService.UpdateTitle(new Title{Id=post.TitleId,Text=titleText});
@@ -63,13 +64,14 @@ namespace qwertygroup.WebApi.Controllers
             return Ok(new PostDto(_postService.GetPost(postId)));
         }
 
-        [HttpDelete]
+//TODO SHOULD BE AUTHORIZED
+        [HttpDelete("/del/{postId}")]
         public ActionResult DeletePost(int postId){
             try{
             Post post = _postService.GetPost(postId);
-            _postService.DeletePost(post);
             _titleService.DeleteTitle(post.TitleId);
             _bodyService.DeleteBody(post.BodyId);
+            _postService.DeletePost(post);
             return Ok("Post deleted.");
             }catch(Exception e){
                 return BadRequest(e.Message);
