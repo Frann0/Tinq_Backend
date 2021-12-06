@@ -123,7 +123,7 @@ namespace qwertygroup.Security.Services
 
         public ActionResult<List<AuthUser>> GetAllUsers()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }
