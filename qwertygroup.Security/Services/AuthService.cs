@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using qwertygroup.Security.IRepositories;
@@ -121,9 +122,16 @@ namespace qwertygroup.Security.Services
             return _userRepository.DeleteUser(user);
         }
 
+        public bool AdminDeleteUser(AuthUser user)
+        {
+            return _userRepository.DeleteUser(user);
+        }
+
         public List<AuthUser> GetAllUsers()
         {
-            return null;
+            return _userRepository.GetAllUsers();
         }
+
+        
     }
 }
