@@ -9,5 +9,6 @@ namespace qwertygroup.WebApi.Dtos
         public string Username { get; set; }
         public string Email { get; set; }
         public List<Permission> Permissions { get; set; }
+        public TokenDto Token { get; set; }
     }
 }
