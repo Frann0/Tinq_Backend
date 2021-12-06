@@ -59,7 +59,7 @@ namespace qwertygroup.WebApi.Controllers
         
         [AllowAnonymous]
         [HttpPost(nameof(Register))]
-        public ActionResult Register([FromBody] RegisterDto registerDto)
+        public ActionResult<bool> Register([FromBody] RegisterDto registerDto)
         {
             if (!ModelState.IsValid && registerDto == null) // add Modelstate ?
             {
@@ -76,7 +76,7 @@ namespace qwertygroup.WebApi.Controllers
             
             var user = _authService.CreateUser(authUser, registerDto.Password);
 
-            return user ? Ok("Registration Succeeded!") : BadRequest("Registration Failed");
+            return user;
         }
 
         
@@ -94,7 +94,7 @@ namespace qwertygroup.WebApi.Controllers
         
         
         [Authorize(nameof(RegisteredUserHandler))]
-        [HttpDelete]
+        [HttpDelete("deleteprofile")]
         public ActionResult DeleteProfile([FromBody] UserDto userDto)
         {
             var user = _authService.FindUser(userDto.Username);
@@ -102,7 +102,7 @@ namespace qwertygroup.WebApi.Controllers
         }
         
         [Authorize(nameof(AdminUserHandler))]
-        [HttpDelete]
+        [HttpDelete("deleteuser")]
         public ActionResult<bool> AdminDeleteUser([FromBody] UserDto userDto)
         {
             var user = _authService.FindUser(userDto.Username);
