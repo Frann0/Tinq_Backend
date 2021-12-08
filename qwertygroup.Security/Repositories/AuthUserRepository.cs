@@ -45,15 +45,6 @@ namespace qwertygroup.Security
                 .Select(up => up.Permission)
                 .ToList();
         }
-        public List<AuthUser> GetAllUsers2()
-        {
-            return _authDbContext.AuthUsers.Select(u => new AuthUser()
-            {
-                Username = u.Username,
-                Email = u.Email,
-                Id = u.Id
-            }).ToList();
-        }
 
         public List<AuthUser> GetAllUsers()
         {
@@ -89,9 +80,7 @@ namespace qwertygroup.Security
                 var p = d.Value.Distinct().ToList();
                 u.Permissions.AddRange(p);
             }
-
             return usersWithPermissions;
-
         }
         
 
@@ -111,17 +100,46 @@ namespace qwertygroup.Security
                 HashedPassword = newUser.HashedPassword
             };
             
-            _authDbContext.AuthUsers.Add(user);
+            var userEntity = _authDbContext.AuthUsers.Add(user).Entity;
+            _authDbContext.SaveChanges();
+            
+            _authDbContext.UserPermissions.Add(new UserPermission() {
+                    PermissionId = REGISTERED_USER_PERMISSION_ID, 
+                    UserId = userEntity.Id});
             
             return _authDbContext.SaveChanges() > 0;
         }
 
+        public AuthUser AssignAdminPermissionToUser(AuthUser user)
+        {
+            // REFAC
+            _authDbContext.UserPermissions.Add(new UserPermission()
+            {
+                PermissionId = ADMIN_USER_PERMISSION_ID, 
+                UserId = user.Id
+            });
+            _authDbContext.SaveChanges();
+            
+            user.Permissions.Add(new Permission(){Id = 2, Name = "Admin"});
+            return user;
+        }
         
-
-        // TODO UpdateUser
-        
-        // TODO AddPermission
-        
-        // TODO RemovePermission
+        public AuthUser RemoveAdminPermissionFromUser(AuthUser user)
+        {
+            // REFAC
+            _authDbContext.UserPermissions.Remove(new UserPermission()
+            {
+                PermissionId = ADMIN_USER_PERMISSION_ID, 
+                UserId = user.Id
+            });
+            _authDbContext.SaveChanges();
+            
+            user.Permissions.Remove(new Permission()
+            {
+                Id = ADMIN_USER_PERMISSION_ID, 
+                Name = "Admin"
+            });
+            return user;
+        }
     }
 }

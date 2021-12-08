@@ -101,6 +101,8 @@ namespace qwertygroup.WebApi
             {
                 options.AddPolicy(nameof(RegisteredUserHandler),
                     policy => policy.Requirements.Add(new RegisteredUserHandler()));
+                options.AddPolicy(nameof(AdminUserHandler),
+                    policy => policy.Requirements.Add(new AdminUserHandler()));
             });
             
             services.AddCors(options =>

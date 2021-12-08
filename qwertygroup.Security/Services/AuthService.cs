@@ -26,10 +26,10 @@ namespace qwertygroup.Security.Services
         public AuthService(
             IConfiguration configuration,
             IAuthUserService.IAuthUserService authUserService,
-            IAuthUserRepository _userRepository)
+            IAuthUserRepository userRepository)
         {
             _authUserService = authUserService;
-            this._userRepository = _userRepository;
+            this._userRepository = userRepository;
             _configuration = configuration;
         }
 
@@ -132,6 +132,14 @@ namespace qwertygroup.Security.Services
             return _userRepository.GetAllUsers();
         }
 
-        
+        public AuthUser AssignAdminPermissionToUser(AuthUser user)
+        {
+            return _userRepository.AssignAdminPermissionToUser(user);
+        }
+
+        public AuthUser RemoveAdminPermissionFromUser(AuthUser user)
+        {
+            return _userRepository.RemoveAdminPermissionFromUser(user);
+        }
     }
 }
