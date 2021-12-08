@@ -4,12 +4,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Encodings;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using qwertygroup.Security.IRepositories;
@@ -33,7 +29,7 @@ namespace qwertygroup.Security.Services
             _configuration = configuration;
         }
 
-        
+
 
 
         public JwtToken GenerateJwtToken(AuthUser user, string password)
@@ -43,7 +39,7 @@ namespace qwertygroup.Security.Services
                 {
                     Message = "Email or Password not correct"
                 };
-            
+
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(_configuration["JwtConfig:Issuer"],
@@ -54,7 +50,7 @@ namespace qwertygroup.Security.Services
                 },
                 expires: DateTime.Now.AddMinutes(10),
                 signingCredentials: credentials);
-            
+
             return new JwtToken
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),

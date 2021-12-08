@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using qwertygroup.Security.Models;
 
 namespace qwertygroup.Security

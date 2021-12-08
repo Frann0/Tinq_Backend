@@ -48,40 +48,14 @@ namespace qwertygroup.Security
 
         public List<AuthUser> GetAllUsers()
         {
-            var userPermissions = _authDbContext.UserPermissions
-                .Include(up => up.User)
-                .Where(up => up.UserId == up.User.Id)
-                .Include(up => up.Permission)
-                .Where(up => up.PermissionId == up.Permission.Id)
-                .ToList();
-
-            var usersWithPermissions = new List<AuthUser>();
-
-            var dictionary = new Dictionary<AuthUser, List<Permission>>();
-
-            foreach (var up in userPermissions)
+            return _authDbContext.AuthUsers.Select(u => new AuthUser()
             {
-                if (!dictionary.ContainsKey(up.User))
-                {
-                    var user = up.User;
-                    var permission = new List<Permission>(){up.Permission};
-                    dictionary.Add(user, permission);
-                }
-            }
-
-            foreach (var up in userPermissions)
-            {
-                dictionary.FirstOrDefault(u => u.Key.Id == up.UserId).Value.Add(up.Permission);
-            }
-
-            foreach (var d in dictionary)
-            {
-                var u = d.Key;
-                var p = d.Value.Distinct().ToList();
-                u.Permissions.AddRange(p);
-            }
-            return usersWithPermissions;
+                Username = u.Username,
+                Email = u.Email,
+                Id = u.Id
+            }).ToList();
         }
+
         
 
         public bool DeleteUser(AuthUser user)
@@ -140,6 +114,28 @@ namespace qwertygroup.Security
                 Name = "Admin"
             });
             return user;
+        }
+        
+        public IEnumerable<UserPermission> GetAllUserPermissions()
+        {
+            var query = from userPermission in _authDbContext.UserPermissions
+                join user in _authDbContext.AuthUsers on userPermission.UserId equals user.Id
+                select new UserPermission
+                {
+                    UserId=userPermission.UserId,
+                    User=user,
+                    PermissionId=userPermission.PermissionId
+                };
+            var query2 =    from userPermission in query
+                join permission in _authDbContext.Permissions on userPermission.PermissionId equals permission.Id
+                select new UserPermission{
+                    UserId=userPermission.UserId,
+                    User=userPermission.User,
+                    PermissionId=userPermission.PermissionId,
+                    Permission=permission                                
+                };
+            return query2;    
+
         }
     }
 }
