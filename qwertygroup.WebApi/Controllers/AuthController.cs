@@ -21,10 +21,11 @@ namespace qwertygroup.WebApi.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-
+        private readonly Permission ADMIN_PERMISSION;
         public AuthController(IAuthService authService)
         {
             _authService = authService;
+            ADMIN_PERMISSION = new Permission() {Id = 2, Name = "Admin"};
         }
        
         [AllowAnonymous]
@@ -32,6 +33,7 @@ namespace qwertygroup.WebApi.Controllers
         public ActionResult<UserDto> Login([FromBody] LoginDto loginDto)
         {
             // validate
+
             var result =  InputValidator(loginDto);
             
             var authUser = _authService.FindUser(loginDto.Email);
@@ -56,17 +58,23 @@ namespace qwertygroup.WebApi.Controllers
             };
         }
 
-        
+
         [AllowAnonymous]
         [HttpPost(nameof(Register))]
         public ActionResult<bool> Register([FromBody] RegisterDto registerDto)
         {
-            if (!ModelState.IsValid && registerDto == null) // add Modelstate ?
+            
+            if (!ModelState.IsValid && registerDto == null) 
             {
                 return BadRequest("User Registration Failed");
             }
+
+            var userQuery = _authService.FindUser(registerDto.Email);
+            if (userQuery != null)
+            {
+                return BadRequest("Email already registered to another user.");
+            }
             
-            // check email exist
 
             var authUser = new AuthUser()
             {
@@ -93,6 +101,7 @@ namespace qwertygroup.WebApi.Controllers
         }
         
         
+
         [Authorize(nameof(RegisteredUserHandler))]
         [HttpDelete("deleteprofile")]
         public ActionResult DeleteProfile([FromBody] UserDto userDto)
@@ -109,13 +118,27 @@ namespace qwertygroup.WebApi.Controllers
             return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
         }
         
-        [Authorize(nameof(AdminUserHandler))]
-        [HttpPut()]
-        public ActionResult<bool> UpdateUserPermissions()
+        //[Authorize(nameof(AdminUserHandler))]
+        [HttpPost()]
+        public ActionResult<UserDto> AssignAdminUserPermission(UserDto userDto)
         {
-            return null;
+            var user = _authService.FindUser(userDto.Email);
+            var updatedUser = _authService.AssignAdminPermissionToUser(user);
+
+            userDto.Permissions.Add(ADMIN_PERMISSION);
+            return userDto;
         }
 
+        //[Authorize(nameof(AdminUserHandler))]
+        [HttpDelete()]
+        public ActionResult<UserDto> RemoveAdminUserPermission(UserDto userDto)
+        {
+            var user = _authService.FindUser(userDto.Email);
+            var updatedUser = _authService.RemoveAdminPermissionFromUser(user);
+
+            userDto.Permissions.Remove(ADMIN_PERMISSION);
+            return userDto;
+        }
 
         private bool InputValidator<T>(T input)
         {
