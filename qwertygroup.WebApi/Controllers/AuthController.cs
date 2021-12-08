@@ -56,7 +56,7 @@ namespace qwertygroup.WebApi.Controllers
             };
         }
 
-        
+
         [AllowAnonymous]
         [HttpPost(nameof(Register))]
         public ActionResult<bool> Register([FromBody] RegisterDto registerDto)
@@ -93,6 +93,7 @@ namespace qwertygroup.WebApi.Controllers
         }
         
         
+
         [Authorize(nameof(RegisteredUserHandler))]
         [HttpDelete("deleteprofile")]
         public ActionResult DeleteProfile([FromBody] UserDto userDto)

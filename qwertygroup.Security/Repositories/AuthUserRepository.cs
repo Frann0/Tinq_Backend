@@ -13,7 +13,8 @@ namespace qwertygroup.Security
     public class AuthUserRepository : IAuthUserRepository
     {
         private readonly AuthDbContext _authDbContext;
-
+        private const int REGISTERED_USER_PERMISSION_ID = 1;
+        private const int ADMIN_USER_PERMISSION_ID = 2;
         public AuthUserRepository(AuthDbContext authDbContext)
         {
             _authDbContext = authDbContext;
@@ -44,7 +45,7 @@ namespace qwertygroup.Security
                 .Select(up => up.Permission)
                 .ToList();
         }
-        public List<AuthUser> GetAllUsers()
+        public List<AuthUser> GetAllUsers2()
         {
             return _authDbContext.AuthUsers.Select(u => new AuthUser()
             {
@@ -54,6 +55,44 @@ namespace qwertygroup.Security
             }).ToList();
         }
 
+        public List<AuthUser> GetAllUsers()
+        {
+            var userPermissions = _authDbContext.UserPermissions
+                .Include(up => up.User)
+                .Where(up => up.UserId == up.User.Id)
+                .Include(up => up.Permission)
+                .Where(up => up.PermissionId == up.Permission.Id)
+                .ToList();
+
+            var usersWithPermissions = new List<AuthUser>();
+
+            var dictionary = new Dictionary<AuthUser, List<Permission>>();
+
+            foreach (var up in userPermissions)
+            {
+                if (!dictionary.ContainsKey(up.User))
+                {
+                    var user = up.User;
+                    var permission = new List<Permission>(){up.Permission};
+                    dictionary.Add(user, permission);
+                }
+            }
+
+            foreach (var up in userPermissions)
+            {
+                dictionary.FirstOrDefault(u => u.Key.Id == up.UserId).Value.Add(up.Permission);
+            }
+
+            foreach (var d in dictionary)
+            {
+                var u = d.Key;
+                var p = d.Value.Distinct().ToList();
+                u.Permissions.AddRange(p);
+            }
+
+            return usersWithPermissions;
+
+        }
         
 
         public bool DeleteUser(AuthUser user)
@@ -73,6 +112,7 @@ namespace qwertygroup.Security
             };
             
             _authDbContext.AuthUsers.Add(user);
+            
             return _authDbContext.SaveChanges() > 0;
         }
 
