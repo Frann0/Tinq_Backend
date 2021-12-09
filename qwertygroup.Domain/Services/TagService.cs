@@ -7,7 +7,7 @@ using qwertygroup.Domain.IRepositories;
 
 namespace qwertygroup.Domain.Services
 {
-    public class TagService : ITagService
+    public class TagService : MyIdentifyable,ITagService
     {
         private readonly ITagRepository _tagRepository;
         private readonly IPostTagRepository _postTagRepository;
@@ -17,6 +17,8 @@ namespace qwertygroup.Domain.Services
             if (tagRepository == null)
                 throw new MissingFieldException("TagService Must have a TagRepository!");
             _tagRepository = tagRepository;
+            if (postTagRepository == null)
+                throw new MissingFieldException("TagService Must have a PostTagRepository!");
             _postTagRepository = postTagRepository;
         }
 
@@ -37,11 +39,13 @@ namespace qwertygroup.Domain.Services
 
         public Tag UpdateTag(Tag newTag)
         {
+            CheckId(newTag.Id);
             return _tagRepository.UpdateTag(newTag);
         }
 
         public void DeleteTag(int tagId)
         {
+            CheckId(tagId);
             _tagRepository.DeleteTag(tagId);
         }
     }

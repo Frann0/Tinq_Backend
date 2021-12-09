@@ -7,7 +7,7 @@ using qwertygroup.Domain.IRepositories;
 
 namespace qwertygroup.Domain.Services
 {
-    public class TitleService : ITitleService
+    public class TitleService : MyIdentifyable, ITitleService
     {
         private readonly ITitleRepository _titleRepository;
 
@@ -25,21 +25,14 @@ namespace qwertygroup.Domain.Services
 
         public Title GetTitle(int id)
         {
-            if (id <= 0)
+            CheckId(id);
+            try
             {
-                string message = "Id must be greater than 0!";
-                throw new System.InvalidOperationException(message);
+                return _titleRepository.GetTitles().First(t => t.Id == id);
             }
-            else
+            catch (Exception)
             {
-                try
-                {
-                    return _titleRepository.GetTitles().First(t => t.Id == id);
-                }
-                catch (Exception e)
-                {
-                    throw new System.InvalidOperationException($"No title with given id: {id}");
-                }
+                throw;
             }
         }
 
@@ -50,43 +43,31 @@ namespace qwertygroup.Domain.Services
 
         public void DeleteTitle(int id)
         {
-            if (id <= 0)
+            CheckId(id);
+            try
             {
-                string message = "Id must be greater than 0!";
-                throw new System.InvalidOperationException(message);
-            }
-            else
-            {
-                try
-                {
-                    _titleRepository.DeleteTitle(id);
+                _titleRepository.DeleteTitle(id);
 
-                }
-                catch (Exception)
-                {
-                    throw new System.InvalidOperationException($"No title with given id: {id}");
-                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         public Title UpdateTitle(Title title)
         {
-            if (title.Id <= 0)
-            {
-                string message = "Id must be greater than 0!";
-                throw new System.InvalidOperationException(message);
-            }
+            CheckId(title.Id);
             try
             {
-
                 return _titleRepository.UpdateTitle(title);
 
             }
             catch (System.Exception)
             {
-                throw new System.InvalidOperationException($"No body with given id {title.Id}");
+                throw;
             }
-        }
 
+        }
     }
 }

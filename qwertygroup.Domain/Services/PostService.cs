@@ -7,15 +7,18 @@ using System.Linq;
 
 namespace qwertygroup.Domain.Services
 {
-    public class PostService : IPostService
+    public class PostService : MyIdentifyable, IPostService
     {
         private readonly IPostRepository _postRepository;
         private readonly IPostTagRepository _postTagRepository;
 
-        public PostService(IPostRepository postRepository, IPostTagRepository postTagRepository){
-            if(postRepository==null || postTagRepository == null)
-                throw new MissingFieldException("PostService must hate a PostRepository!");
-            _postRepository=postRepository;
+        public PostService(IPostRepository postRepository, IPostTagRepository postTagRepository)
+        {
+            if (postRepository == null)
+                throw new MissingFieldException("PostService must have a PostRepository!");
+            _postRepository = postRepository;
+            if (postTagRepository == null)
+                throw new MissingFieldException("PostService must have a PostTagRepository!");
             _postTagRepository = postTagRepository;
         }
         public List<Post> GetAllPosts()
@@ -25,7 +28,8 @@ namespace qwertygroup.Domain.Services
 
         public Post GetPost(int id)
         {
-           return _postRepository.GetAllPosts().First(p=>p.Id==id);
+            CheckId(id);
+            return _postRepository.GetAllPosts().First(p => p.Id == id);
         }
 
         public Post CreatePost(Post post)
@@ -35,21 +39,25 @@ namespace qwertygroup.Domain.Services
 
         public void DeletePost(Post post)
         {
+            CheckId(post.Id);
             _postRepository.DeletePost(post);
         }
 
         public void CreatePostTagRelation(int postId, int tagId)
         {
-            _postTagRepository.CreatePostTagRelationship(postId,tagId);
+            _postTagRepository.CreatePostTagRelationship(postId, tagId);
         }
 
         public void RemoveTagFromPost(int tagId, int postId)
         {
-            _postTagRepository.RemoveTagFromPost(tagId,postId);
+            CheckId(tagId);
+            CheckId(postId);
+            _postTagRepository.RemoveTagFromPost(tagId, postId);
         }
 
         public void RemovePostTags(int postId)
         {
+            CheckId(postId);
             _postTagRepository.RemovePostTags(postId);
         }
     }
