@@ -47,7 +47,7 @@ namespace qwertygroup.Domain.Test.Services
             IPostService ps;
             Assert.Equal(
             Assert.Throws<MissingFieldException>(() => ps = new PostService(null,null)).Message,
-            "PostService must hate a PostRepository!");
+            "PostService must have a PostRepository!");
         }
 
         [Fact]

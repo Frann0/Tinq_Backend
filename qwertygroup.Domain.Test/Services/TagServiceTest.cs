@@ -10,15 +10,17 @@ namespace qwertygroup.Domain.Test.Services
 {
     public class TagServiceTest
     {
-        public Mock<ITagRepository> _mockRepository;
+        public Mock<ITagRepository> _mockTagRepository;
+        public Mock<IPostTagRepository> _mockPostTagRepository;
         public ITagService _tagService;
         private readonly List<Tag> _fakeList = new List<Tag>();
 
         public TagServiceTest()
         {
-            _mockRepository = new Mock<ITagRepository>();
-            _tagService = new TagService(_mockRepository.Object,null);
-            _mockRepository.Setup(r => r.GetAllTags()).Returns(_fakeList);
+            _mockTagRepository = new Mock<ITagRepository>();
+            _mockPostTagRepository = new Mock<IPostTagRepository>();
+            _tagService = new TagService(_mockTagRepository.Object,_mockPostTagRepository.Object);
+            _mockTagRepository.Setup(r => r.GetAllTags()).Returns(_fakeList);
         }
 
         [Fact]
@@ -40,13 +42,13 @@ namespace qwertygroup.Domain.Test.Services
         public void GetAllTags_CallsTagRepositoriesFindAll_ExactlyOnce()
         {
             _tagService.GetAllTags();
-            _mockRepository.Verify(r => r.GetAllTags(), Times.Once);
+            _mockTagRepository.Verify(r => r.GetAllTags(), Times.Once);
         }
 
         [Fact]
         public void TagService_Has_CreateTag_Method_That_Returns_NewTag(){
             Tag newTag = new Tag{Text="new Tag"};
-            _mockRepository.Setup(r=>r.CreateTag(newTag)).Returns(new Tag{Text=newTag.Text});
+            _mockTagRepository.Setup(r=>r.CreateTag(newTag)).Returns(new Tag{Text=newTag.Text});
             Tag resultTag = _tagService.CreateTag(newTag);
             Assert.NotNull(resultTag);
             Assert.Equal(newTag.Text,resultTag.Text);
