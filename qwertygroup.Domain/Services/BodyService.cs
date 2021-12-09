@@ -6,7 +6,7 @@ using System;
 
 namespace qwertygroup.Domain.Services
 {
-    public class BodyService : IBodyService
+    public class BodyService : MyIdentifyable,IBodyService
     {
         private IBodyRepository _bodyRepository;
 
@@ -15,30 +15,25 @@ namespace qwertygroup.Domain.Services
             _bodyRepository = bodyRepository ?? throw new System.MissingFieldException(
                 "BodyService Must have a BodyRepository!");
         }
-        
+
         public List<Body> GetBodies()
         {
             return _bodyRepository.GetBodies().ToList();
         }
+
         public Body GetBody(int id)
         {
-            if (id <= 0)
+            CheckId(id);
+            try
             {
-                string message = "Id must be greater than 0!";
-                throw new InvalidOperationException(message);
+                return _bodyRepository.GetBodies().First(b => b.Id == id);
             }
-            else
+            catch (Exception)
             {
-                try
-                {
-                    return _bodyRepository.GetBodies().First(b => b.Id == id);
-                }
-                catch (Exception e)
-                {
-                    throw new InvalidOperationException($"No title with given id: {id}");
-                }
+                throw new InvalidOperationException($"No Body with given id: {id}");
             }
         }
+
 
         public Body CreateBody(string text)
         {
@@ -49,11 +44,7 @@ namespace qwertygroup.Domain.Services
 
         public void DeleteBody(int id)
         {
-            if (id <= 0)
-            {
-                string message = "Id must be greater than 0!";
-                throw new InvalidOperationException(message);
-            }
+            CheckId(id);
             try
             {
                 _bodyRepository.DeleteBody(id);
@@ -67,11 +58,7 @@ namespace qwertygroup.Domain.Services
 
         public Body UpdateBody(Body body)
         {
-            if (body.Id <= 0)
-            {
-                string message = "Id must be greater than 0!";
-                throw new System.InvalidOperationException(message);
-            }
+            CheckId(body.Id);
             try
             {
                 return _bodyRepository.UpdateBody(body);
@@ -82,6 +69,6 @@ namespace qwertygroup.Domain.Services
             }
         }
 
-        
+
     }
 }
