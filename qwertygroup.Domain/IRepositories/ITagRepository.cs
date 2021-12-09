@@ -7,6 +7,7 @@ namespace qwertygroup.Domain.IRepositories
     {
         IEnumerable<Tag> GetAllTags();
         Tag CreateTag(Tag tag);
-        void RemoveTagRelations(int tagId);
+        Tag UpdateTag(Tag newTag);
+        void DeleteTag(int tagId);
     }
 }
