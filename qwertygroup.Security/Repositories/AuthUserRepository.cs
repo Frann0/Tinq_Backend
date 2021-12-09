@@ -1,6 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using qwertygroup.Security.Entities;
 using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.Models;
 
@@ -9,7 +13,8 @@ namespace qwertygroup.Security
     public class AuthUserRepository : IAuthUserRepository
     {
         private readonly AuthDbContext _authDbContext;
-
+        private const int REGISTERED_USER_PERMISSION_ID = 1;
+        private const int ADMIN_USER_PERMISSION_ID = 2;
         public AuthUserRepository(AuthDbContext authDbContext)
         {
             _authDbContext = authDbContext;
@@ -19,7 +24,7 @@ namespace qwertygroup.Security
         {
             var authUserEntity = _authDbContext.AuthUsers.FirstOrDefault(user =>
                 user.Email.Equals(email));
-
+            
             if (authUserEntity == null) return null;
 
             return new AuthUser()
@@ -40,6 +45,7 @@ namespace qwertygroup.Security
                 .Select(up => up.Permission)
                 .ToList();
         }
+
         public List<AuthUser> GetAllUsers()
         {
             return _authDbContext.AuthUsers.Select(u => new AuthUser()
@@ -67,37 +73,69 @@ namespace qwertygroup.Security
                 Salt = newUser.Salt,
                 HashedPassword = newUser.HashedPassword
             };
-
-            _authDbContext.AuthUsers.Add(user);
+            
+            var userEntity = _authDbContext.AuthUsers.Add(user).Entity;
+            _authDbContext.SaveChanges();
+            
+            _authDbContext.UserPermissions.Add(new UserPermission() {
+                    PermissionId = REGISTERED_USER_PERMISSION_ID, 
+                    UserId = userEntity.Id});
+            
             return _authDbContext.SaveChanges() > 0;
         }
 
+        public AuthUser AssignAdminPermissionToUser(AuthUser user)
+        {
+            // REFAC
+            _authDbContext.UserPermissions.Add(new UserPermission()
+            {
+                PermissionId = ADMIN_USER_PERMISSION_ID, 
+                UserId = user.Id
+            });
+            _authDbContext.SaveChanges();
+            
+            user.Permissions.Add(new Permission(){Id = 2, Name = "Admin"});
+            return user;
+        }
+        
+        public AuthUser RemoveAdminPermissionFromUser(AuthUser user)
+        {
+            // REFAC
+            _authDbContext.UserPermissions.Remove(new UserPermission()
+            {
+                PermissionId = ADMIN_USER_PERMISSION_ID, 
+                UserId = user.Id
+            });
+            _authDbContext.SaveChanges();
+            
+            user.Permissions.Remove(new Permission()
+            {
+                Id = ADMIN_USER_PERMISSION_ID, 
+                Name = "Admin"
+            });
+            return user;
+        }
+        
         public IEnumerable<UserPermission> GetAllUserPermissions()
         {
             var query = from userPermission in _authDbContext.UserPermissions
-                        join user in _authDbContext.AuthUsers on userPermission.UserId equals user.Id
-                        select new UserPermission
-                        {
-                            UserId=userPermission.UserId,
-                            User=user,
-                            PermissionId=userPermission.PermissionId
-                        };
+                join user in _authDbContext.AuthUsers on userPermission.UserId equals user.Id
+                select new UserPermission
+                {
+                    UserId=userPermission.UserId,
+                    User=user,
+                    PermissionId=userPermission.PermissionId
+                };
             var query2 =    from userPermission in query
-                            join permission in _authDbContext.Permissions on userPermission.PermissionId equals permission.Id
-                            select new UserPermission{
-                                UserId=userPermission.UserId,
-                                User=userPermission.User,
-                                PermissionId=userPermission.PermissionId,
-                                Permission=permission                                
-                            };
+                join permission in _authDbContext.Permissions on userPermission.PermissionId equals permission.Id
+                select new UserPermission{
+                    UserId=userPermission.UserId,
+                    User=userPermission.User,
+                    PermissionId=userPermission.PermissionId,
+                    Permission=permission                                
+                };
             return query2;    
 
         }
-
-        // TODO UpdateUser
-
-        // TODO AddPermission
-
-        // TODO RemovePermission
     }
 }

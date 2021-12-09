@@ -7,9 +7,9 @@ using qwertygroup.Security;
 
 namespace qwertygroup.WebApi.PolicyHandlers
 {
-    public class AdminUserHandler : AuthorizationHandler<RegisteredUserHandler>, IAuthorizationRequirement
+    public class AdminUserHandler : AuthorizationHandler<AdminUserHandler>, IAuthorizationRequirement
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RegisteredUserHandler requirementHandler)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AdminUserHandler requirementHandler)
         {
             var userId = context.User.Claims.FirstOrDefault(u => "Id".Equals(u.Type));
             int id;

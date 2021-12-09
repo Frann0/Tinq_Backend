@@ -26,15 +26,25 @@ namespace qwertygroup.Security
             
             var password = "Pa$$w0rd";
             var salt = _authService.CreateSalt();
+            
             var authUser = new AuthUser()
             {
-                Username = "jjj",
                 Email = "j@j.dk",
                 Salt = salt,
                 HashedPassword = _authService.HashedPassword(password, salt),
                 DbUserId = 1
             };
+            
+            var authUser2 = new AuthUser()
+            {
+                Email = "b@b.dk",
+                Salt = salt,
+                HashedPassword = _authService.HashedPassword(password, salt),
+                DbUserId = 1
+            };
+            
             _ctx.AuthUsers.Add(authUser);
+            _ctx.AuthUsers.Add(authUser2);
             _ctx.SaveChanges();
             _ctx.Permissions.AddRange(new Permission()
             {
@@ -53,11 +63,13 @@ namespace qwertygroup.Security
                 {
                     PermissionId = 2, 
                     UserId = 1
+                },
+                new UserPermission()
+                {
+                    PermissionId = 1,
+                    UserId = 2
                 });
             _ctx.SaveChanges();
-            
-            
-
         }
         
 
