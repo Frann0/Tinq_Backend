@@ -104,7 +104,7 @@ namespace qwertygroup.WebApi
                 options.AddPolicy(nameof(AdminUserHandler),
                     policy => policy.Requirements.Add(new AdminUserHandler()));
             });
-            
+
             services.AddCors(options =>
             {
                 options.AddPolicy("Dev-cors", policy =>
@@ -122,9 +122,12 @@ namespace qwertygroup.WebApi
                             "https://legosforlife2021.web.app")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
-                } );
+                });
             });
+            services.AddScoped<IPostTagRepository, PostTagRepository>();
 
+            services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<ITagService, TagService>();
             services.AddScoped<IBodyRepository, BodyRepository>();
             services.AddScoped<IBodyService, BodyService>();
 
@@ -188,13 +191,27 @@ namespace qwertygroup.WebApi
                 Id = 2,
                 Text = "Potatoes ruin society"
             });
-            postContext.Add(new PostEntity { Id = 1, TitleId = 1, BodyId = 1, UserId = 1 });
-            postContext.Add(new PostEntity { Id = 2, TitleId = 2, BodyId=2, UserId = 1 });
+
+            postContext.tags.Add(new TagEntity
+            {
+                Id = 1,
+                Text = "Good"
+            });
+            postContext.tags.Add(new TagEntity
+            {
+                Id = 2,
+                Text = "Wowza"
+            });
+            postContext.postTags.Add(new PostTagEntity { postId = 1, tagId = 1 });
+            postContext.postTags.Add(new PostTagEntity { postId = 1, tagId = 2 });
+            postContext.postTags.Add(new PostTagEntity { postId = 2, tagId = 2 });
+            postContext.posts.Add(new PostEntity { Id = 1, TitleId = 1, BodyId = 1, UserId = 1 });
+            postContext.posts.Add(new PostEntity { Id = 2, TitleId = 2, BodyId = 2, UserId = 1 });
             postContext.SaveChanges();
             #endregion
 
             //new AuthDbSeeder(authDbContext, securityService).SeedDevelopment();
-            
+
             new AuthDbSeeder(authDbContext, authService).SeedDevelopment();
             app.UseCors("Dev-cors");
             app.UseHttpsRedirection();

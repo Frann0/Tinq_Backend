@@ -9,5 +9,8 @@ namespace qwertygroup.Core.IServices
         Post CreatePost(Post post);
         Post GetPost(int id);
         void DeletePost(Post post);
+        void CreatePostTagRelation(int postId, int id);
+        void RemoveTagFromPost(int tagId, int postId);
+        void RemovePostTags(int postId);
     }
 }

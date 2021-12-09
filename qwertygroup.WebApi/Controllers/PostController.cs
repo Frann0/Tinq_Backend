@@ -16,12 +16,14 @@ namespace qwertygroup.WebApi.Controllers
         private readonly IPostService _postService;
         private readonly IBodyService _bodyService;
         private readonly ITitleService _titleService;
+        private readonly ITagService _tagService;
 
-        public PostController(IPostService postService, IBodyService bodyService, ITitleService titleService)
+        public PostController(IPostService postService, IBodyService bodyService, ITitleService titleService, ITagService tagService)
         {
             _postService = postService;
             _bodyService = bodyService;
             _titleService = titleService;
+            _tagService=tagService;
         }
 
         [HttpGet("/posts")]
@@ -38,8 +40,15 @@ namespace qwertygroup.WebApi.Controllers
             return Ok(new PostDto(post));
         }
 
+        [HttpPost("/{postId}/"+"{tag}")]
+        public ActionResult<Post> AddPostTagRelation(int postId, string tag){
+            Tag tagWithId = _tagService.CreateTag(new Tag{Text=tag});
+            _postService.CreatePostTagRelation(postId,tagWithId.Id);
+            return Ok();
+        }
+
         [HttpPost]
-        public ActionResult<PostDto> CreatePost([FromQuery]String titleText, String bodyText, int userId)
+        public ActionResult<PostDto> CreatePost([FromQuery]String titleText, String bodyText, int userId, String tags)
         {
             Body body = _bodyService.CreateBody(bodyText);
             Title title = _titleService.CreateTitle(titleText);
@@ -51,6 +60,8 @@ namespace qwertygroup.WebApi.Controllers
                 Body = bodyText,
                 UserId = userId
             });
+            List<Tag> tagList = tags.Split(",").Select(t=>_tagService.CreateTag(post.Id,new Tag{Text=t})).ToList();
+            post.Tags=tagList;
             return Ok(new PostDto(post));
         }
 

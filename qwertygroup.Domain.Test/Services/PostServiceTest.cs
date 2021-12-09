@@ -13,7 +13,10 @@ namespace qwertygroup.Domain.Test.Services
     {
         private readonly IPostService _postService;
         private readonly Mock<IPostRepository> _mock;
+        
+        private readonly Mock<IPostTagRepository> _postTagMock;
         private readonly IPostRepository _mockPostRepository;
+        private readonly IPostTagRepository _mockPostTagRepository;
         private readonly Post _expectedPost = new Post { TitleId = 1231231, BodyId = 1337 };
         private List<Post> _expected = new List<Post>{new Post{Id = 1, TitleId=0,UserId=0,BodyId=0},
                                                       new Post{Id = 2, TitleId=1,UserId=1,BodyId=1}};
@@ -21,17 +24,19 @@ namespace qwertygroup.Domain.Test.Services
         public PostServiceTest()
         {
             _mock = new Mock<IPostRepository>();
+            _postTagMock = new Mock<IPostTagRepository>();
             _mock.Setup(r => r.GetAllPosts()).Returns(_expected);
             _mock.Setup(r => r.CreatePost(_expectedPost)).Returns(_expectedPost);
             _mock.Setup(r => r.DeletePost(_expected[0])).Callback(() => _expected.Remove(_expected[0]));
             _mockPostRepository = _mock.Object;
-            _postService = new PostService(_mockPostRepository);
+            _mockPostTagRepository=_postTagMock.Object;
+            _postService = new PostService(_mockPostRepository,_mockPostTagRepository);
         }
 
         [Fact]
         public void PostService_Exists_And_Extends_IPostService()
         {
-            IPostService ps = new PostService(_mockPostRepository);
+            IPostService ps = new PostService(_mockPostRepository,_mockPostTagRepository);
             Assert.NotNull(ps);
             Assert.IsAssignableFrom<IPostService>(ps);
         }
@@ -41,7 +46,7 @@ namespace qwertygroup.Domain.Test.Services
         {
             IPostService ps;
             Assert.Equal(
-            Assert.Throws<MissingFieldException>(() => ps = new PostService(null)).Message,
+            Assert.Throws<MissingFieldException>(() => ps = new PostService(null,null)).Message,
             "PostService must hate a PostRepository!");
         }
 

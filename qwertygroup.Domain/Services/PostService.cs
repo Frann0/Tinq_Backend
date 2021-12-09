@@ -10,11 +10,13 @@ namespace qwertygroup.Domain.Services
     public class PostService : IPostService
     {
         private readonly IPostRepository _postRepository;
+        private readonly IPostTagRepository _postTagRepository;
 
-        public PostService(IPostRepository postRepository){
-            if(postRepository==null)
+        public PostService(IPostRepository postRepository, IPostTagRepository postTagRepository){
+            if(postRepository==null || postTagRepository == null)
                 throw new MissingFieldException("PostService must hate a PostRepository!");
             _postRepository=postRepository;
+            _postTagRepository = postTagRepository;
         }
         public List<Post> GetAllPosts()
         {
@@ -34,6 +36,21 @@ namespace qwertygroup.Domain.Services
         public void DeletePost(Post post)
         {
             _postRepository.DeletePost(post);
+        }
+
+        public void CreatePostTagRelation(int postId, int tagId)
+        {
+            _postTagRepository.CreatePostTagRelationship(postId,tagId);
+        }
+
+        public void RemoveTagFromPost(int tagId, int postId)
+        {
+            _postTagRepository.RemoveTagFromPost(tagId,postId);
+        }
+
+        public void RemovePostTags(int postId)
+        {
+            _postTagRepository.RemovePostTags(postId);
         }
     }
 }

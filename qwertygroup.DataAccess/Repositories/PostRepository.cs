@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using qwertygroup.Core.Models;
@@ -17,6 +18,7 @@ namespace qwertygroup.DataAccess.Repositories
 
         public IEnumerable<Post> GetAllPosts()
         {
+            //Joins post with body
             var joinBodyQuery = from post in _context.posts
                                 join body in _context.bodies on post.BodyId equals body.Id into bodyq
                                 from subbody in bodyq.DefaultIfEmpty()
@@ -29,6 +31,7 @@ namespace qwertygroup.DataAccess.Repositories
                                     Body = subbody.Text ?? string.Empty
                                 };
 
+            //Joins title with body
             var joinTitleQuery = from post in joinBodyQuery
                                  join title in _context.titles on post.TitleId equals title.Id into titleq
                                  from subtitle in titleq.DefaultIfEmpty()
@@ -41,8 +44,8 @@ namespace qwertygroup.DataAccess.Repositories
                                      post.TitleId,
                                      Title = subtitle.Text ?? string.Empty
                                  };
-
-            return joinTitleQuery.Select(p => new Post
+            //Converts the anonymous type to Post
+            List<Post> posts = joinTitleQuery.Select(p => new Post
             {
                 Id = p.Id,
                 UserId = p.UserId,
@@ -50,25 +53,70 @@ namespace qwertygroup.DataAccess.Repositories
                 BodyId = p.BodyId,
                 Title = p.Title,
                 TitleId = p.TitleId
-            });
+            }).ToList();
+
+            foreach (Post post in posts)
+            {
+                //This could be done in the method
+                post.Tags = GetTagsForPost(post);
+            }
+            return posts;
         }
 
-         public Post CreatePost(Post post)
+        public List<Tag> GetTagsForPost(Post post)
         {
-            PostEntity postEntity = new PostEntity{
-                BodyId=post.BodyId,
-                TitleId=post.TitleId,
-                UserId=post.UserId
+            List<Tag> tags = new List<Tag>();
+            try
+            {
+                //Gets matches in ID, should only be one
+                var postSubset = _context.posts.Where(t => t.Id == post.Id);
+                // Joins the post table with posts tags with the same post id
+                var joinPostWithPostTag = from qpost in postSubset
+                                          join postTag in _context.postTags on qpost.Id equals postTag.postId
+                                          select new
+                                          {
+                                              post.Id,
+                                              tagId = postTag.tagId
+                                          };
+                //Join tagIds with postTagIds
+                var joinPostTagWithTag = from qpost in joinPostWithPostTag
+                                         join tag in _context.tags on qpost.tagId equals tag.Id
+                                         select new
+                                         {
+                                             qpost.Id,
+                                             qpost.tagId,
+                                             tagText = tag.Text
+                                         };
+                //Convert the table to a list of tags, since that is what we want.
+                var list = joinPostTagWithTag.ToList();
+                if (list.Count > 0)
+                    tags = list.Select(t => new Tag { Id = t.tagId, Text = t.tagText }).ToList();
+            }
+            catch (ArgumentNullException)
+            {
+                //No tags with given post id, so we just return the previously defined empty list of tags
+            }
+            return tags;
+
+        }
+
+        public Post CreatePost(Post post)
+        {
+            PostEntity postEntity = new PostEntity
+            {
+                BodyId = post.BodyId,
+                TitleId = post.TitleId,
+                UserId = post.UserId
             };
             _context.posts.Add(postEntity);
             _context.SaveChanges();
-            post.Id=postEntity.Id;
+            post.Id = postEntity.Id;
             return post;
         }
 
         public void DeletePost(Post post)
         {
-            PostEntity postEntity = _context.posts.First(p=>p.Id==post.Id);
+            PostEntity postEntity = _context.posts.First(p => p.Id == post.Id);
             _context.posts.Remove(postEntity);
             _context.SaveChanges();
         }

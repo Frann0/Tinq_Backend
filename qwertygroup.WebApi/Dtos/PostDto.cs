@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using qwertygroup.Core.Models;
 
 namespace qwertygroup.WebApi.Dtos
@@ -9,6 +10,7 @@ namespace qwertygroup.WebApi.Dtos
         public string Title { get; set; }
         public string Body { get; set; }
         public int UserId { get; set; }
+        public List<Tag> Tags {get;set;}
 
         public PostDto(Post post)
         {
@@ -16,6 +18,7 @@ namespace qwertygroup.WebApi.Dtos
             Body = post.Body;
             Title = post.Title;
             UserId = post.UserId;
+            Tags=post.Tags;
         }
     }
 }
