@@ -13,5 +13,7 @@ namespace qwertygroup.DataAccess
         public DbSet<BodyEntity> bodies { get; set; }
         public DbSet<TitleEntity> titles { get; set; }
         public DbSet<PostEntity> posts{get;set;}
+        public DbSet<TagEntity> tags{get;set;}
+        public DbSet<PostTagEntity> postTags{get;set;}
     }
 }

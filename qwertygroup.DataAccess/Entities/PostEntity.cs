@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using qwertygroup.Core.IServices;
+
 namespace qwertygroup.DataAccess.Entities
 {
     public class PostEntity

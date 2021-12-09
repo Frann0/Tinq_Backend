@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using qwertygroup.Core.IServices;
+
 namespace qwertygroup.Core.Models
 {
     public class Post
@@ -8,5 +11,6 @@ namespace qwertygroup.Core.Models
         public int BodyId{get;set;}
         public string Body{get;set;}
         public int UserId{get;set;}
+        public List<Tag> Tags{get;set;}
     }
 }
