@@ -34,5 +34,23 @@ namespace qwertygroup.WebApi.Controllers
             return Ok(_tagService.CreateTag(postId,newTag));
             
         }
+
+        [HttpPatch("{tagId}/u/"+"{text}")]
+        public ActionResult<Tag> UpdateTag(int tagId, string text)
+        {
+            Tag newTag = new Tag{Id=tagId,Text=text};
+            return Ok(_tagService.UpdateTag(newTag));
+            
+            
+        }
+
+        [HttpDelete("d/{tagId}")]
+        public ActionResult<Tag> DeleteTag(int tagId)
+        {
+            _tagService.DeleteTag(tagId);
+            return Ok();
+            
+            
+        }
     }
 }

@@ -35,5 +35,14 @@ namespace qwertygroup.Domain.Services
             return t;
         }
 
+        public Tag UpdateTag(Tag newTag)
+        {
+            return _tagRepository.UpdateTag(newTag);
+        }
+
+        public void DeleteTag(int tagId)
+        {
+            _tagRepository.DeleteTag(tagId);
+        }
     }
 }

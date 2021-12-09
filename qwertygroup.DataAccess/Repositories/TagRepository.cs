@@ -57,5 +57,13 @@ namespace qwertygroup.DataAccess.Repositories
             }
             _context.SaveChanges();
         }
+
+        public Tag UpdateTag(Tag newTag)
+        {
+            TagEntity tag = _context.tags.First(t => t.Id == newTag.Id);
+            tag.Text=newTag.Text;
+            _context.SaveChanges();
+            return tag.ToTag();
+        }
     }
 }

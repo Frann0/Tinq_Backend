@@ -6,6 +6,7 @@ namespace qwertygroup.DataAccess.Entities
 {
     public class TagEntity
     {
+        private TagEntity tag;
         public int Id{get;set;}
         public string Text{get;set;}
 

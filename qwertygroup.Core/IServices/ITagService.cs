@@ -8,5 +8,7 @@ namespace qwertygroup.Core.IServices
         List<Tag> GetAllTags();
         Tag CreateTag(Tag newTag);
         Tag CreateTag(int postId,Tag newTag);
+        Tag UpdateTag(Tag newTag);
+        void DeleteTag(int tagId);
     }
 }
