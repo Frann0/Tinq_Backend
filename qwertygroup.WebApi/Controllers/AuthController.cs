@@ -48,6 +48,7 @@ namespace qwertygroup.WebApi.Controllers
             var token = _authService.GenerateJwtToken(authUser, loginDto.Password);
             return new UserDto()
             {
+                Id = authUser.Id,
                 Username = authUser.Username,
                 Email = authUser.Email,
                 Permissions = authUser.Permissions,

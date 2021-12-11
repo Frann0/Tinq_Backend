@@ -1,7 +1,7 @@
 using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.Models;
 
-namespace qwertygroup.Security
+namespace qwertygroup.Security.Services
 {
     public class AuthUserService : IAuthUserService.IAuthUserService
     {
