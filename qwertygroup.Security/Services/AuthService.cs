@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using qwertygroup.Security.IAuthUserService;
 using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.Models;
 
@@ -128,12 +129,12 @@ namespace qwertygroup.Security.Services
             return _userRepository.GetAllUsers();
         }
 
-        public AuthUser AssignAdminPermissionToUser(AuthUser user)
+        public bool AssignAdminPermissionToUser(AuthUser user)
         {
             return _userRepository.AssignAdminPermissionToUser(user);
         }
 
-        public AuthUser RemoveAdminPermissionFromUser(AuthUser user)
+        public bool RemoveAdminPermissionFromUser(AuthUser user)
         {
             return _userRepository.RemoveAdminPermissionFromUser(user);
         }

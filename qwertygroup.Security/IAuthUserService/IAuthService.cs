@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using qwertygroup.Security.Models;
 
-namespace qwertygroup.Security
+namespace qwertygroup.Security.IAuthUserService
 {
     public interface IAuthService
     {
@@ -15,8 +14,8 @@ namespace qwertygroup.Security
         bool DeleteUser(AuthUser user);
         bool AdminDeleteUser(AuthUser user);
         List<AuthUser> GetAllUsers();
-        AuthUser AssignAdminPermissionToUser(AuthUser user);
-        AuthUser RemoveAdminPermissionFromUser(AuthUser user);
+        bool AssignAdminPermissionToUser(AuthUser user);
+        bool RemoveAdminPermissionFromUser(AuthUser user);
 
     }
 }

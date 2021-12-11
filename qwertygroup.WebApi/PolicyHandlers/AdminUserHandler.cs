@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using qwertygroup.Security;
+using qwertygroup.Security.IAuthUserService;
 
 namespace qwertygroup.WebApi.PolicyHandlers
 {
@@ -19,7 +20,7 @@ namespace qwertygroup.WebApi.PolicyHandlers
                 var defaultContext = context.Resource as DefaultHttpContext;
                 var authService = defaultContext.HttpContext.RequestServices.GetRequiredService<IAuthService>();
                 var permissions = authService.GetPermissions(id);
-                if (permissions.Exists(p => p.Name.Equals("AdminUser")))
+                if (permissions.Exists(p => p.Name.Equals("Admin")))
                 {
                     context.Succeed(requirementHandler);
                 }

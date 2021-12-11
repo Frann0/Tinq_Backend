@@ -14,8 +14,8 @@ namespace qwertygroup.Security.IRepositories
         IEnumerable<UserPermission> GetAllUserPermissions();
 
         List<AuthUser> GetAllUsers();
-        AuthUser AssignAdminPermissionToUser(AuthUser user);
-        AuthUser RemoveAdminPermissionFromUser(AuthUser user);
+        bool AssignAdminPermissionToUser(AuthUser user);
+        bool RemoveAdminPermissionFromUser(AuthUser user);
        
     }
 }

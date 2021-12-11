@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qwertygroup.Security", "qwe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qwertygroup.WebApi", "qwertygroup.WebApi\qwertygroup.WebApi.csproj", "{8E9CD8F2-F2E1-43C5-8E6C-F57969AC201F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qwertygroup.Security.Test", "qwertygroup.Security.Test\qwertygroup.Security.Test.csproj", "{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,5 +116,17 @@ Global
 		{8E9CD8F2-F2E1-43C5-8E6C-F57969AC201F}.Release|x64.Build.0 = Release|Any CPU
 		{8E9CD8F2-F2E1-43C5-8E6C-F57969AC201F}.Release|x86.ActiveCfg = Release|Any CPU
 		{8E9CD8F2-F2E1-43C5-8E6C-F57969AC201F}.Release|x86.Build.0 = Release|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Debug|x64.Build.0 = Debug|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Debug|x86.Build.0 = Debug|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Release|x64.ActiveCfg = Release|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Release|x64.Build.0 = Release|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Release|x86.ActiveCfg = Release|Any CPU
+		{C9CAA2B5-1193-4DC8-BB6F-D00A3E94DCFA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
