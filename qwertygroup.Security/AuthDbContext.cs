@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using qwertygroup.Security.Entities;
 using qwertygroup.Security.Models;
 
 namespace qwertygroup.Security

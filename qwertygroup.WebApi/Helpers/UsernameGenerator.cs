@@ -7,7 +7,7 @@ namespace qwertygroup.WebApi.Helpers
         public static string GenerateRandomUsername()
         {
             var rand = new Random();
-            return "test" + rand.Next(99999999);
+            return "usr" + rand.Next(99999999);
         }
     }
 }

@@ -1,14 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using qwertygroup.Security.Entities;
 using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.Models;
 
-namespace qwertygroup.Security
+namespace qwertygroup.Security.Repositories
 {
     public class AuthUserRepository : IAuthUserRepository
     {
@@ -84,7 +80,7 @@ namespace qwertygroup.Security
             return _authDbContext.SaveChanges() > 0;
         }
 
-        public AuthUser AssignAdminPermissionToUser(AuthUser user)
+        public bool AssignAdminPermissionToUser(AuthUser user)
         {
             // REFAC
             _authDbContext.UserPermissions.Add(new UserPermission()
@@ -92,13 +88,10 @@ namespace qwertygroup.Security
                 PermissionId = ADMIN_USER_PERMISSION_ID, 
                 UserId = user.Id
             });
-            _authDbContext.SaveChanges();
-            
-            user.Permissions.Add(new Permission(){Id = 2, Name = "Admin"});
-            return user;
+            return _authDbContext.SaveChanges() > 0;
         }
         
-        public AuthUser RemoveAdminPermissionFromUser(AuthUser user)
+        public bool RemoveAdminPermissionFromUser(AuthUser user)
         {
             // REFAC
             _authDbContext.UserPermissions.Remove(new UserPermission()
@@ -106,14 +99,7 @@ namespace qwertygroup.Security
                 PermissionId = ADMIN_USER_PERMISSION_ID, 
                 UserId = user.Id
             });
-            _authDbContext.SaveChanges();
-            
-            user.Permissions.Remove(new Permission()
-            {
-                Id = ADMIN_USER_PERMISSION_ID, 
-                Name = "Admin"
-            });
-            return user;
+            return _authDbContext.SaveChanges() > 0;
         }
         
         public IEnumerable<UserPermission> GetAllUserPermissions()

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using qwertygroup.Core.Models;
 
-namespace qwertygroup.Domain.Services
+namespace qwertygroup.Domain.IRepositories
 {
     public interface IBodyRepository
     {

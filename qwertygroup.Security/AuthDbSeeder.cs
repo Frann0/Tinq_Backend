@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
-using qwertygroup.Security.Entities;
+using qwertygroup.Security.IServices;
 using qwertygroup.Security.Models;
 
 namespace qwertygroup.Security
@@ -29,18 +29,18 @@ namespace qwertygroup.Security
             
             var authUser = new AuthUser()
             {
+                Username = "usr12047019275",
                 Email = "j@j.dk",
                 Salt = salt,
-                HashedPassword = _authService.HashedPassword(password, salt),
-                DbUserId = 1
+                HashedPassword = _authService.HashedPassword(password, salt)
             };
             
             var authUser2 = new AuthUser()
             {
+                Username = "usr128178509",
                 Email = "b@b.dk",
                 Salt = salt,
-                HashedPassword = _authService.HashedPassword(password, salt),
-                DbUserId = 1
+                HashedPassword = _authService.HashedPassword(password, salt)
             };
             
             _ctx.AuthUsers.Add(authUser);

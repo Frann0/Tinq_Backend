@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Nito.AsyncEx;
 using qwertygroup.Security;
+using qwertygroup.Security.IServices;
 using qwertygroup.Security.Models;
 using qwertygroup.WebApi.Dtos;
 using qwertygroup.WebApi.Helpers;
@@ -47,6 +48,7 @@ namespace qwertygroup.WebApi.Controllers
             var token = _authService.GenerateJwtToken(authUser, loginDto.Password);
             return new UserDto()
             {
+                Id = authUser.Id,
                 Username = authUser.Username,
                 Email = authUser.Email,
                 Permissions = authUser.Permissions,
@@ -87,7 +89,7 @@ namespace qwertygroup.WebApi.Controllers
             return user;
         }
 
-        
+        [Authorize(nameof(AdminUserHandler))]
         [HttpGet("allusers")]
         public ActionResult<List<UserListDto>> GetAllUsers()
         {
@@ -118,26 +120,20 @@ namespace qwertygroup.WebApi.Controllers
             return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
         }
         
-        //[Authorize(nameof(AdminUserHandler))]
+        [Authorize(nameof(AdminUserHandler))]
         [HttpPost()]
-        public ActionResult<UserDto> AssignAdminUserPermission(UserDto userDto)
+        public ActionResult<bool> AssignAdminUserPermission(UserDto userDto)
         {
             var user = _authService.FindUser(userDto.Email);
-            var updatedUser = _authService.AssignAdminPermissionToUser(user);
-
-            userDto.Permissions.Add(ADMIN_PERMISSION);
-            return userDto;
+            return _authService.AssignAdminPermissionToUser(user);
         }
 
-        //[Authorize(nameof(AdminUserHandler))]
+        [Authorize(nameof(AdminUserHandler))]
         [HttpDelete()]
-        public ActionResult<UserDto> RemoveAdminUserPermission(UserDto userDto)
+        public ActionResult<bool> RemoveAdminUserPermission(UserDto userDto)
         {
             var user = _authService.FindUser(userDto.Email);
-            var updatedUser = _authService.RemoveAdminPermissionFromUser(user);
-
-            userDto.Permissions.Remove(ADMIN_PERMISSION);
-            return userDto;
+            return _authService.RemoveAdminPermissionFromUser(user);
         }
 
         private bool InputValidator<T>(T input)

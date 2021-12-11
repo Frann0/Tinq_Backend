@@ -9,19 +9,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using qwertygroup.Security.IRepositories;
+using qwertygroup.Security.IServices;
 using qwertygroup.Security.Models;
 
 namespace qwertygroup.Security.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IAuthUserService.IAuthUserService _authUserService;
+        private readonly IAuthUserService _authUserService;
         private readonly IAuthUserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
         public AuthService(
             IConfiguration configuration,
-            IAuthUserService.IAuthUserService authUserService,
+            IAuthUserService authUserService,
             IAuthUserRepository userRepository)
         {
             _authUserService = authUserService;
@@ -59,7 +60,7 @@ namespace qwertygroup.Security.Services
 
         }
 
-        private bool Authenticate(AuthUser dbUser, string plainTextPassword)
+        public bool Authenticate(AuthUser dbUser, string plainTextPassword)
         {
             return dbUser != null && HashedPassword(plainTextPassword, dbUser.Salt)
                 .Equals(dbUser.HashedPassword);
@@ -85,11 +86,13 @@ namespace qwertygroup.Security.Services
             return salt;
         }
 
+        //TODO refac
         public AuthUser FindUser(string username)
         {
             return _userRepository.FindUser(username);
         }
 
+        //TODO refac
         public bool CreateUser(AuthUser user, string registerDtoPassword)
         {
             var salt = CreateSalt();
@@ -103,37 +106,35 @@ namespace qwertygroup.Security.Services
             return _userRepository.CreateUser(newUser);
         }
 
-        public AuthUser CreateUser(IdentityUser identityUser, string registerDtoPassword)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<Permission> GetPermissions(int id)
         {
             return _userRepository.GetUserPermissions(id);
         }
 
+        //TODO refac
         public bool DeleteUser(AuthUser user)
         {
             return _userRepository.DeleteUser(user);
         }
 
+        //TODO refac
         public bool AdminDeleteUser(AuthUser user)
         {
             return _userRepository.DeleteUser(user);
         }
 
+        //TODO refac
         public List<AuthUser> GetAllUsers()
         {
             return _userRepository.GetAllUsers();
         }
 
-        public AuthUser AssignAdminPermissionToUser(AuthUser user)
+        public bool AssignAdminPermissionToUser(AuthUser user)
         {
             return _userRepository.AssignAdminPermissionToUser(user);
         }
 
-        public AuthUser RemoveAdminPermissionFromUser(AuthUser user)
+        public bool RemoveAdminPermissionFromUser(AuthUser user)
         {
             return _userRepository.RemoveAdminPermissionFromUser(user);
         }
