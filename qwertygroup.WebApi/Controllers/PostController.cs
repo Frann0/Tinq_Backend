@@ -32,6 +32,20 @@ namespace qwertygroup.WebApi.Controllers
             return Ok(_postService.GetAllPosts().Select(
                 post => new PostDto(post)));
         }
+        
+        [HttpGet("/posts/{userId}")]
+        public ActionResult<IEnumerable<PostDto>> GetPostsByUserID(int userId)
+        {
+            return Ok(_postService.GetPostByUserID(userId).Select(
+                post => new PostDto(post)));
+        }
+        
+        [HttpGet("/search/{query}")]
+        public ActionResult<IEnumerable<PostDto>> GetPostsByUserID(string query)
+        {
+            return Ok(_postService.GetPostsBySearchString(query).Select(
+                post => new PostDto(post)));
+        }
 
         [HttpGet("{id}")]
         public ActionResult<PostDto> GetPost(int id)
