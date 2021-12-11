@@ -16,17 +16,15 @@ namespace qwertygroup.Security.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IAuthUserService _authUserService;
+        
         private readonly IAuthUserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
         public AuthService(
             IConfiguration configuration,
-            IAuthUserService authUserService,
             IAuthUserRepository userRepository)
         {
-            _authUserService = authUserService;
-            this._userRepository = userRepository;
+            _userRepository = userRepository;
             _configuration = configuration;
         }
 
