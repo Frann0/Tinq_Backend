@@ -1,6 +1,6 @@
 using System.Linq;
 using Moq;
-using qwertygroup.Security.IAuthUserService;
+using qwertygroup.Security.IServices;
 using Xunit;
 
 namespace qwertygroup.Security.Test.IService
