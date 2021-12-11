@@ -4,6 +4,7 @@ using qwertygroup.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 
 namespace qwertygroup.Domain.Services
 {
@@ -30,6 +31,30 @@ namespace qwertygroup.Domain.Services
         {
             CheckId(id);
             return _postRepository.GetAllPosts().First(p => p.Id == id);
+        }
+
+        public List<Post> GetPostByUserID(int userId)
+        {
+            CheckId(userId);
+            return _postRepository.GetAllPosts().Where(post => post.UserId == userId).ToList();
+        }
+        
+        public List<Post> GetPostsBySearchString(string query)
+        {
+            List<Post> all = GetAllPosts();
+            List<Post> res = new List<Post>();
+            for (int i = 0; i < all.Count; i++)
+            {
+                for (int j = 0; j < all[i].Tags.Count; j++)
+                {
+                    if (all[i].Tags[j].Text.ToLower().Equals(query.ToLower()))
+                    {
+                        res.Add(all[i]);
+                    }
+                }
+            }
+
+            return res;
         }
 
         public Post CreatePost(Post post)

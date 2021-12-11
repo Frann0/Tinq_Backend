@@ -8,6 +8,8 @@ namespace qwertygroup.Core.IServices
         List<Post> GetAllPosts();
         Post CreatePost(Post post);
         Post GetPost(int id);
+        List<Post> GetPostByUserID(int userId);
+        List<Post> GetPostsBySearchString(string query);
         void DeletePost(Post post);
         void CreatePostTagRelation(int postId, int id);
         void RemoveTagFromPost(int tagId, int postId);
