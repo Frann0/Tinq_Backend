@@ -1,7 +1,7 @@
 using qwertygroup.Core.Models;
 using Xunit;
 
-namespace qwertygroup.Core.Test
+namespace qwertygroup.Core.Test.Models
 {
     public class BodyTest
     {

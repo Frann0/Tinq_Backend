@@ -4,6 +4,7 @@ using qwertygroup.Domain.Services;
 using System.Collections.Generic;
 using qwertygroup.Core.Models;
 using System.Linq;
+using qwertygroup.Domain.IRepositories;
 
 namespace qwertygroup.Domain.Test.IRepositories
 {

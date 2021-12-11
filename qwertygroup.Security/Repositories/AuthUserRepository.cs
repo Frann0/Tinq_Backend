@@ -1,13 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.Models;
 
-namespace qwertygroup.Security
+namespace qwertygroup.Security.Repositories
 {
     public class AuthUserRepository : IAuthUserRepository
     {

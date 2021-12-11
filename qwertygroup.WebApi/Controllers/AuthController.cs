@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Nito.AsyncEx;
 using qwertygroup.Security;
-using qwertygroup.Security.IAuthUserService;
+using qwertygroup.Security.IServices;
 using qwertygroup.Security.Models;
 using qwertygroup.WebApi.Dtos;
 using qwertygroup.WebApi.Helpers;

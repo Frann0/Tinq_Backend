@@ -3,6 +3,7 @@ using System.Linq;
 using qwertygroup.Core.IServices;
 using qwertygroup.Core.Models;
 using System;
+using qwertygroup.Domain.IRepositories;
 
 namespace qwertygroup.Domain.Services
 {

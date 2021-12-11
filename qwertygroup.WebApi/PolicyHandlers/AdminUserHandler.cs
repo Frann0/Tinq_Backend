@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using qwertygroup.Security;
-using qwertygroup.Security.IAuthUserService;
+using qwertygroup.Security.IServices;
 
 namespace qwertygroup.WebApi.PolicyHandlers
 {

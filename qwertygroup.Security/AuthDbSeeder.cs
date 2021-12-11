@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
-using qwertygroup.Security.IAuthUserService;
+using qwertygroup.Security.IServices;
 using qwertygroup.Security.Models;
 
 namespace qwertygroup.Security

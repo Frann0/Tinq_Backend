@@ -31,6 +31,34 @@ namespace qwertygroup.Security.Test.Entities
             Assert.True(_userPermission.UserId is int);
         }
         
+        [Fact]
+        public void UserPermission_PermissionId_SetPermissionIdStoresId()
+        {
+            _userPermission.PermissionId = 1;
+            Assert.Equal(1, _userPermission.PermissionId);
+        }
         
+        [Fact]
+        public void UserPermission_UserId_SetUserIdStoresId()
+        {
+            _userPermission.UserId = 1;
+            Assert.Equal(1, _userPermission.UserId);
+        }
+
+        [Fact]
+        public void UserPermission_AuthUser_SetAuthUserStoresAuthUser()
+        {
+            var user = new AuthUser() {Id = 1, Username = "test"};
+            _userPermission.User = user;
+            Assert.Equal(user, _userPermission.User);
+        }
+        
+        [Fact]
+        public void UserPermission_Permission_SetPermissionStoresPermission()
+        {
+            var permission = new Permission() {Id = 1, Name = "test"};
+            _userPermission.Permission = permission;
+            Assert.Equal(permission, _userPermission.Permission);
+        }
     }
 }

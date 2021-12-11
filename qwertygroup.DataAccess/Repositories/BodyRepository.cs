@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using qwertygroup.Core.Models;
 using qwertygroup.DataAccess.Entities;
+using qwertygroup.Domain.IRepositories;
 using qwertygroup.Domain.Services;
 
 namespace qwertygroup.DataAccess.Repositories
