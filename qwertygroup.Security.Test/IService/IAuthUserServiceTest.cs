@@ -20,10 +20,50 @@ namespace qwertygroup.Security.Test.IService
         }
         
         [Fact]
-        public void IAuthService_HasGenerateJwtTokenMethod()
+        public void IAuthService_HasFindUserMethod()
         {
             var method = typeof(IServices.IAuthUserService)
-                .GetMethods().FirstOrDefault(m => "GenerateJwtToken".Equals(m.Name));
+                .GetMethods().FirstOrDefault(m => "FindUser".Equals(m.Name));
+            Assert.NotNull(method);
+        }
+        
+        [Fact]
+        public void IAuthService_HasCreateUserMethod()
+        {
+            var method = typeof(IServices.IAuthUserService)
+                .GetMethods().FirstOrDefault(m => "CreateUser".Equals(m.Name));
+            Assert.NotNull(method);
+        }
+        
+        [Fact]
+        public void IAuthService_HasDeleteUserMethod()
+        {
+            var method = typeof(IServices.IAuthUserService)
+                .GetMethods().FirstOrDefault(m => "DeleteUser".Equals(m.Name));
+            Assert.NotNull(method);
+        }
+        
+        [Fact]
+        public void IAuthService_HasAdminDeleteUserMethod()
+        {
+            var method = typeof(IServices.IAuthUserService)
+                .GetMethods().FirstOrDefault(m => "AdminDeleteUser".Equals(m.Name));
+            Assert.NotNull(method);
+        }
+        
+        [Fact]
+        public void IAuthService_HasGetAllUsersMethod()
+        {
+            var method = typeof(IServices.IAuthUserService)
+                .GetMethods().FirstOrDefault(m => "GetAllUsers".Equals(m.Name));
+            Assert.NotNull(method);
+        }
+        
+        [Fact]
+        public void IAuthService_HasGetPermissionsMethod()
+        {
+            var method = typeof(IServices.IAuthUserService)
+                .GetMethods().FirstOrDefault(m => "GetPermissions".Equals(m.Name));
             Assert.NotNull(method);
         }
     }

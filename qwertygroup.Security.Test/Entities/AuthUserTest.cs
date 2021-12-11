@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using qwertygroup.Security.Models;
+using System.Collections.Generic;
 using Xunit;
 
 namespace qwertygroup.Security.Test.Entities
