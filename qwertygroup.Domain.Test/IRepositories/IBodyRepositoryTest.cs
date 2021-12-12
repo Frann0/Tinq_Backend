@@ -18,7 +18,7 @@ namespace qwertygroup.Domain.Test.IRepositories
             var repository = new Mock<IBodyRepository>().Object;
             Assert.NotNull(repository);
         }
-        
+
         [Fact]
         public void GetBody_WithNoParam_ReturnsListOfAllBodies()
         {
@@ -37,10 +37,10 @@ namespace qwertygroup.Domain.Test.IRepositories
         {
             //Set up mock repository and define methods
             var mock = new Mock<IBodyRepository>();
+            var repository = mock.Object;
             Body body = new Body { Text = "someBody" };
             mock.Setup(r => r.CreateBody(body.Text)).Returns(body);
 
-            var repository = mock.Object;
             Assert.Equal(body, repository.CreateBody(body.Text));
         }
 
@@ -52,6 +52,7 @@ namespace qwertygroup.Domain.Test.IRepositories
             Body body = new Body { Text = "someBody", Id = 1 };
             var fakeList = new List<Body> { body };
             var repository = mock.Object;
+
             mock.Setup(r => r.GetBodies()).Returns(fakeList);
             mock.Setup(r => r.DeleteBody(body.Id)).Callback(() => fakeList.RemoveAll(b => b.Id == body.Id));
 
@@ -66,16 +67,16 @@ namespace qwertygroup.Domain.Test.IRepositories
             //Setup the mock repository and define methods
             var mock = new Mock<IBodyRepository>();
             Body body = new Body { Text = "someBody", Id = 1 };
-            var fakeList = new List<Body> { body };
             Body body2 = new Body { Text = "someBody2", Id = 1 };
-            
+            var fakeList = new List<Body> { body };
+
             var repository = mock.Object;
             mock.Setup(r => r.GetBodies()).Returns(fakeList);
-            mock.Setup(r => r.UpdateBody(body2)).Callback(() => fakeList.First(b => b.Id == body2.Id).Text=body2.Text);
+            mock.Setup(r => r.UpdateBody(body2)).Callback(() => fakeList.First(b => b.Id == body2.Id).Text = body2.Text);
 
             repository.UpdateBody(body2);
 
-            Assert.True(body.Text==body2.Text);
+            Assert.True(body.Text == body2.Text);
         }
     }
 }

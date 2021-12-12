@@ -11,6 +11,7 @@ namespace qwertygroup.Domain.Test.Services
 {
     public class TagServiceTest
     {
+
         public Mock<ITagRepository> _mockTagRepository;
         public Mock<IPostTagRepository> _mockPostTagRepository;
         public ITagService _tagService;
@@ -37,20 +38,23 @@ namespace qwertygroup.Domain.Test.Services
                 Assert.Throws<System.MissingFieldException>(() => new TagService(null, null)).Message
                 ==
                 "TagService Must have a TagRepository!");
+
             Assert.True(
-            Assert.Throws<System.MissingFieldException>(() => new TagService(null, _mockPostTagRepository.Object)).Message
-            ==
-            "TagService Must have a TagRepository!");
+                Assert.Throws<System.MissingFieldException>(() => new TagService(null, _mockPostTagRepository.Object)).Message
+                ==
+                "TagService Must have a TagRepository!");
+
             Assert.True(
-            Assert.Throws<System.MissingFieldException>(() => new TagService(_mockTagRepository.Object, null)).Message
-            ==
-            "TagService Must have a PostTagRepository!");
+                Assert.Throws<System.MissingFieldException>(() => new TagService(_mockTagRepository.Object, null)).Message
+                ==
+                "TagService Must have a PostTagRepository!");
         }
 
         [Fact]
         public void GetAllTags_CallsTagRepositoriesFindAll_ExactlyOnce()
         {
             _tagService.GetAllTags();
+
             _mockTagRepository.Verify(r => r.GetAllTags(), Times.Once);
         }
 
@@ -60,6 +64,7 @@ namespace qwertygroup.Domain.Test.Services
             Tag newTag = new Tag { Text = "new Tag" };
             _mockTagRepository.Setup(r => r.CreateTag(newTag)).Returns(new Tag { Text = newTag.Text });
             Tag resultTag = _tagService.CreateTag(newTag);
+
             Assert.NotNull(resultTag);
             Assert.Equal(newTag.Text, resultTag.Text);
         }
@@ -71,6 +76,7 @@ namespace qwertygroup.Domain.Test.Services
             //Setup the mock fakesitory and define methods
             _mockTagRepository.Setup(r => r.GetAllTags()).Returns(_fakeList);
             Tag updatedTag = new Tag { Id = 2, Text = "new text" };
+
             _mockTagRepository.Setup(r => r.UpdateTag(updatedTag)).Callback(() =>
             {
                 _fakeList.First(b => b.Id == updatedTag.Id).Text = updatedTag.Text;
@@ -93,9 +99,5 @@ namespace qwertygroup.Domain.Test.Services
 
             Assert.True(_tagService.GetAllTags().Count < 2);
         }
-
-
-
-
     }
 }

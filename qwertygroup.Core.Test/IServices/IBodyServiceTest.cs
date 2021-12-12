@@ -8,7 +8,6 @@ namespace qwertygroup.Core.Test.IServices
 {
     public class IBodyServiceTest
     {
-
         [Fact]
         public void IBodyService_IsAvailable(){
             var service = new Mock<IBodyService>().Object;

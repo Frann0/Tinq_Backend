@@ -9,17 +9,20 @@ namespace qwertygroup.Core.Test.IServices
     public class ITagServiceTest
     {
         [Fact]
-        public void ITagServiceExists(){
+        public void ITagServiceExists()
+        {
             ITagService tagService = new Mock<ITagService>().Object;
             Assert.NotNull(tagService);
         }
 
-        public void GetAllTagsMethodExists_And_ReturnsListOfTags(){
+        [Fact]
+        public void GetAllTagsMethodExists_And_ReturnsListOfTags()
+        {
             var mock = new Mock<ITagService>();
             var fakeList = new List<Tag>();
-            mock.Setup(r=>r.GetAllTags()).Returns(fakeList);
+            mock.Setup(r => r.GetAllTags()).Returns(fakeList);
             var service = mock.Object;
-            Assert.Equal(fakeList,service.GetAllTags());
+            Assert.Equal(fakeList, service.GetAllTags());
         }
 
         [Fact]
@@ -32,8 +35,6 @@ namespace qwertygroup.Core.Test.IServices
             Assert.IsAssignableFrom<Tag>(resultTag);
         }
 
-        
-        
         [Fact]
         public void Delete_Tag_Method_Exists()
         {
@@ -41,15 +42,15 @@ namespace qwertygroup.Core.Test.IServices
             Body body = new Body { Text = "someBody" };
             mock.Setup(r => r.DeleteTag(body.Id));
         }
-        
+
         [Fact]
         public void UpdateTag_Method_Exists_And_Returns_UpdatedTag()
         {
             var mock = new Mock<ITagService>();
-            Tag tag = new Tag {Id=1, Text = "some tag1" };
+            Tag tag = new Tag { Id = 1, Text = "some tag1" };
             string newTag = "SomeTag2";
-            mock.Setup(r => r.UpdateTag(tag)).Callback(()=>tag.Text=newTag).Returns(tag);
-            Assert.Equal(mock.Object.UpdateTag(tag),tag);
+            mock.Setup(r => r.UpdateTag(tag)).Callback(() => tag.Text = newTag).Returns(tag);
+            Assert.Equal(mock.Object.UpdateTag(tag), tag);
         }
     }
 }

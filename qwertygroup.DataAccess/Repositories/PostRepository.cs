@@ -16,6 +16,10 @@ namespace qwertygroup.DataAccess.Repositories
             _context = context;
         }
 
+        /*
+            Returns an IEnumerable of posts that are fully joined with bodies, titles and tags.
+            Empty fields are filled with empty strings.
+        */
         public IEnumerable<Post> GetAllPosts()
         {
             //Joins post with body
@@ -63,6 +67,7 @@ namespace qwertygroup.DataAccess.Repositories
             return posts;
         }
 
+        //Gets the tags for a given post
         public List<Tag> GetTagsForPost(Post post)
         {
             List<Tag> tags = new List<Tag>();
@@ -72,11 +77,11 @@ namespace qwertygroup.DataAccess.Repositories
                 var postSubset = _context.posts.Where(t => t.Id == post.Id);
                 // Joins the post table with posts tags with the same post id
                 var joinPostWithPostTag = from qpost in postSubset
-                                          join postTag in _context.postTags on qpost.Id equals postTag.postId
+                                          join postTag in _context.postTags on qpost.Id equals postTag.PostId
                                           select new
                                           {
                                               post.Id,
-                                              tagId = postTag.tagId
+                                              tagId = postTag.TagId
                                           };
                 //Join tagIds with postTagIds
                 var joinPostTagWithTag = from qpost in joinPostWithPostTag
@@ -97,17 +102,11 @@ namespace qwertygroup.DataAccess.Repositories
                 //No tags with given post id, so we just return the previously defined empty list of tags
             }
             return tags;
-
         }
 
         public Post CreatePost(Post post)
         {
-            PostEntity postEntity = new PostEntity
-            {
-                BodyId = post.BodyId,
-                TitleId = post.TitleId,
-                UserId = post.UserId
-            };
+            PostEntity postEntity = new PostEntity(post);
             _context.posts.Add(postEntity);
             _context.SaveChanges();
             post.Id = postEntity.Id;

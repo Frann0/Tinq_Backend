@@ -14,8 +14,8 @@ namespace qwertygroup.Domain.Services
 
         public PostService(IPostRepository postRepository, IPostTagRepository postTagRepository)
         {
-            _postRepository = postRepository??throw new MissingFieldException("PostService must have a PostRepository!");                
-            _postTagRepository = postTagRepository??throw new MissingFieldException("PostService must have a PostTagRepository!");
+            _postRepository = postRepository ?? throw new MissingFieldException("PostService must have a PostRepository!");
+            _postTagRepository = postTagRepository ?? throw new MissingFieldException("PostService must have a PostTagRepository!");
         }
         public List<Post> GetAllPosts()
         {
@@ -33,7 +33,7 @@ namespace qwertygroup.Domain.Services
             CheckId(userId);
             return _postRepository.GetAllPosts().Where(post => post.UserId == userId).ToList();
         }
-        
+
         public List<Post> GetPostsBySearchString(string query)
         {
             List<Post> all = GetAllPosts();

@@ -9,7 +9,8 @@ namespace qwertygroup.Core.Test.IServices
     public class ITitleServiceTest
     {
         [Fact]
-        public void ITitleService_IsAvailable(){
+        public void ITitleService_IsAvailable()
+        {
             var service = new Mock<ITitleService>().Object;
             Assert.NotNull(service);
         }
@@ -36,7 +37,6 @@ namespace qwertygroup.Core.Test.IServices
             Assert.Equal(title, service.CreateTitle(title.Text));
         }
 
-        
         [Fact]
         public void Delete_Title_Method_Exists()
         {
@@ -44,20 +44,22 @@ namespace qwertygroup.Core.Test.IServices
             Body body = new Body { Text = "someBody" };
             mock.Setup(r => r.DeleteTitle(body.Id));
         }
-        
+
         [Fact]
         public void UpdateTitle_Method_Exists_And_Returns_UpdatedTitle()
         {
             var mock = new Mock<ITitleService>();
-            Title title = new Title {Id=1, Text = "some title1" };
+            Title title = new Title { Id = 1, Text = "some title1" };
             string newTitle = "SomeTitle2";
-            mock.Setup(r => r.UpdateTitle(title)).Callback(()=>title.Text=newTitle).Returns(title);
-            Assert.Equal(mock.Object.UpdateTitle(title),title);
+            mock.Setup(r => r.UpdateTitle(title)).Callback(() => title.Text = newTitle).Returns(title);
+            Assert.Equal(mock.Object.UpdateTitle(title), title);
         }
-         [Fact]
-        public void GetTitle_Method_Exists_And_ReturnsTitle(){
+
+        [Fact]
+        public void GetTitle_Method_Exists_And_ReturnsTitle()
+        {
             var mock = new Mock<ITitleService>();
-            Title title = new Title { Id=1,Text = "some title" };
+            Title title = new Title { Id = 1, Text = "some title" };
             mock.Setup(r => r.GetTitle(title.Id)
             ).Returns(title);
             Assert.IsType<Title>(mock.Object.GetTitle(title.Id));
