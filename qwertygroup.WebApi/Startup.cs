@@ -20,6 +20,7 @@ using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.IServices;
 using qwertygroup.Security.Repositories;
 using qwertygroup.Security.Services;
+using qwertygroup.WebApi.Extensions;
 using qwertygroup.WebApi.Middleware;
 using qwertygroup.WebApi.PolicyHandlers;
 
@@ -42,67 +43,21 @@ namespace qwertygroup.WebApi
             var loggerFactory = LoggerFactory.Create(builder =>
                         {
                             builder.AddConsole();
-                        }
-                        );
+                        });
+
             services.AddControllers();
-            services.AddSwaggerGen(c =>
+            services.AddApplicationServices();
+            services.AddAuthServices(_configuration);
+            services.AddSwaggerDocumentation();
+            
+            services.AddDbContext<PostContext>(options => options.UseSqlite("Data Source=main.db"));
+            services.AddDbContext<AuthDbContext>(options => options.UseSqlite(_configuration.GetConnectionString("AuthConnection")));
+            services.AddDbContext<PostContext>(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "qwertygroup.WebApi", Version = "v1" });
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
-                });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[] {}
-                    }
-                });
+                options.UseSqlite("Data Source=main.db");
+                options.UseLoggerFactory(loggerFactory);
             });
-
-            services.AddAuthentication(authenticationOptions =>
-                {
-                    authenticationOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    authenticationOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(
-                                Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"])),
-                        ValidateIssuer = true,
-                        ValidIssuer = _configuration["JwtConfig:Issuer"],
-                        ValidateAudience = true,
-                        ValidAudience = _configuration["JwtConfig:Audience"],
-                        ValidateLifetime = true
-                    };
-                });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(nameof(RegisteredUserHandler),
-                    policy => policy.Requirements.Add(new RegisteredUserHandler()));
-                options.AddPolicy(nameof(AdminUserHandler),
-                    policy => policy.Requirements.Add(new AdminUserHandler()));
-            });
-
+            
             services.AddCors(options =>
             {
                 options.AddPolicy("Dev-cors", policy =>
@@ -122,33 +77,6 @@ namespace qwertygroup.WebApi
                         .AllowAnyMethod();
                 });
             });
-            services.AddScoped<IPostTagRepository, PostTagRepository>();
-
-            services.AddScoped<ITagRepository, TagRepository>();
-            services.AddScoped<ITagService, TagService>();
-            services.AddScoped<IBodyRepository, BodyRepository>();
-            services.AddScoped<IBodyService, BodyService>();
-
-
-            services.AddScoped<IAuthUserRepository, AuthUserRepository>();
-            services.AddScoped<IAuthUserService, AuthUserService>();
-            services.AddScoped<IAuthService, AuthService>();
-
-            services.AddDbContext<AuthDbContext>(options => options.UseSqlite(_configuration.GetConnectionString("AuthConnection")));
-
-            services.AddScoped<ITitleRepository, TitleRepository>();
-            services.AddScoped<ITitleService, TitleService>();
-
-            services.AddScoped<IPostRepository, PostRepository>();
-            services.AddScoped<IPostService, PostService>();
-
-            services.AddDbContext<PostContext>(options =>
-            {
-                options.UseSqlite("Data Source=main.db");
-                options.UseLoggerFactory(loggerFactory);
-            });
-
-            services.AddDbContext<PostContext>(options => options.UseSqlite("Data Source=main.db"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -157,9 +85,9 @@ namespace qwertygroup.WebApi
         {
             if (env.IsDevelopment())
             {
+                new AuthDbSeeder(authDbContext, authService).SeedDevelopment();
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "qwertygroup.WebApi v1"));
+                app.UseSwaggerDocumentation();
             }
             #region postDbtestdata
             postContext.Database.EnsureDeleted();
@@ -207,10 +135,7 @@ namespace qwertygroup.WebApi
             postContext.posts.Add(new PostEntity { Id = 2, TitleId = 2, BodyId = 2, UserId = 1 });
             postContext.SaveChanges();
             #endregion
-
-            //new AuthDbSeeder(authDbContext, securityService).SeedDevelopment();
-
-            new AuthDbSeeder(authDbContext, authService).SeedDevelopment();
+            
             app.UseCors("Dev-cors");
             app.UseHttpsRedirection();
             app.UseMiddleware<JwtMiddleware>();
