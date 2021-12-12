@@ -15,7 +15,7 @@ namespace qwertygroup.Core.Test.IServices
         }
 
         [Fact]
-        public void GetTitle_WithNoParam_ReturnsListOfAllTitles()
+        public void GetTitle_Exists_And_ReturnsListOfAllTitles()
         {
             var mock = new Mock<ITitleService>();
             var fakeList = new List<Title>();
@@ -26,7 +26,7 @@ namespace qwertygroup.Core.Test.IServices
         }
 
         [Fact]
-        public void Create_Title_Method_Exists_And_Returns_The_Created_Title()
+        public void CreateTitle_MethodExists_And_Returns_TheCreatedTitle()
         {
             var mock = new Mock<ITitleService>();
             Title title = new Title { Text = "someTitle" };
@@ -46,14 +46,16 @@ namespace qwertygroup.Core.Test.IServices
         }
         
         [Fact]
-        public void Update_Title_Method_Exists()
+        public void UpdateTitle_Method_Exists_And_Returns_UpdatedTitle()
         {
             var mock = new Mock<ITitleService>();
-            Title title = new Title { Text = "some title" };
-            mock.Setup(r => r.UpdateTitle(title));
+            Title title = new Title {Id=1, Text = "some title1" };
+            string newTitle = "SomeTitle2";
+            mock.Setup(r => r.UpdateTitle(title)).Callback(()=>title.Text=newTitle).Returns(title);
+            Assert.Equal(mock.Object.UpdateTitle(title),title);
         }
          [Fact]
-        public void Get_Title_Method_Exists(){
+        public void GetTitle_Method_Exists_And_ReturnsTitle(){
             var mock = new Mock<ITitleService>();
             Title title = new Title { Id=1,Text = "some title" };
             mock.Setup(r => r.GetTitle(title.Id)

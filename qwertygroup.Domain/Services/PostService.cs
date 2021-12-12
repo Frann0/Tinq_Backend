@@ -4,7 +4,6 @@ using qwertygroup.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mail;
 
 namespace qwertygroup.Domain.Services
 {
@@ -15,12 +14,8 @@ namespace qwertygroup.Domain.Services
 
         public PostService(IPostRepository postRepository, IPostTagRepository postTagRepository)
         {
-            if (postRepository == null)
-                throw new MissingFieldException("PostService must have a PostRepository!");
-            _postRepository = postRepository;
-            if (postTagRepository == null)
-                throw new MissingFieldException("PostService must have a PostTagRepository!");
-            _postTagRepository = postTagRepository;
+            _postRepository = postRepository??throw new MissingFieldException("PostService must have a PostRepository!");                
+            _postTagRepository = postTagRepository??throw new MissingFieldException("PostService must have a PostTagRepository!");
         }
         public List<Post> GetAllPosts()
         {
@@ -70,6 +65,8 @@ namespace qwertygroup.Domain.Services
 
         public void CreatePostTagRelation(int postId, int tagId)
         {
+            CheckId(tagId);
+            CheckId(postId);
             _postTagRepository.CreatePostTagRelationship(postId, tagId);
         }
 

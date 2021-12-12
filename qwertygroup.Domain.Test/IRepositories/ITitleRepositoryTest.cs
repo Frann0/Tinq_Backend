@@ -18,7 +18,7 @@ namespace qwertygroup.Domain.Test.IRepositories
         }
 
         [Fact]
-        public void GetBody_WithNoParam_ReturnsListOfAllBodies()
+        public void GetBody_WithNoParam_ReturnsListOfAllTitles()
         {
             //Set up mock repository and define get bodies method
             var mock = new Mock<ITitleRepository>();

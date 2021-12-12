@@ -50,7 +50,9 @@ namespace qwertygroup.Core.Test.IServices
         {
             var mock = new Mock<IBodyService>();
             Body body = new Body { Text = "someBody" };
-            mock.Setup(r => r.UpdateBody(body));
+            string newBody="newBody";
+            mock.Setup(r => r.UpdateBody(body)).Callback(()=>body.Text=newBody).Returns(body);
+            Assert.Equal(mock.Object.UpdateBody(body),body);
         }
 
         [Fact]

@@ -32,7 +32,7 @@ namespace qwertygroup.Domain.Services
             }
             catch (Exception)
             {
-                throw;
+                throw new InvalidOperationException($"No Title with given id: {id}");
             }
         }
 
@@ -51,7 +51,7 @@ namespace qwertygroup.Domain.Services
             }
             catch (Exception)
             {
-                throw;
+                throw new InvalidOperationException($"No Title with given id: {id}");
             }
         }
 
@@ -65,7 +65,7 @@ namespace qwertygroup.Domain.Services
             }
             catch (System.Exception)
             {
-                throw;
+                throw new InvalidOperationException($"No Title with given id: {title.Id}");
             }
 
         }

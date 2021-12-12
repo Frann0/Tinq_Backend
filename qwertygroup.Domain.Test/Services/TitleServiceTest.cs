@@ -14,7 +14,6 @@ namespace qwertygroup.Domain.Test.Services
         private readonly Mock<ITitleRepository> _mockTitleRepository;
         private readonly ITitleService _titleService;
         private readonly List<Title> _expected;
-        
         private readonly List<Title> _repoList = new List<Title>();
 
         public TitleServiceTest()
@@ -43,7 +42,7 @@ namespace qwertygroup.Domain.Test.Services
         }
 
         [Fact]
-        public void GetBodies_CallsBodyRepositoriesFindAll_ExactlyOnce()
+        public void GetTitles_CallsTitleRepositoriesFindAll_ExactlyOnce()
         {
             _titleService.GetTitles();
             _mockTitleRepository.Verify(r => r.GetTitles(), Times.Once);
@@ -52,19 +51,22 @@ namespace qwertygroup.Domain.Test.Services
         [Fact]
         public void TitleService_CreateTitle_AddsTheTitleToTheListOfTitles()
         {
+            Title title = new Title();
             List<Title> fakeList = new List<Title>();
-            foreach (Title title in _expected)
+            _mockTitleRepository.Setup(r => r.CreateTitle(title.Text))
+               .Returns(title)
+               .Callback(() => fakeList.Add(_titleService.CreateTitle(title.Text)));
+            foreach (Title title1 in _expected)
             {
-                _mockTitleRepository.Setup(r => r.CreateTitle(title.Text))
-                .Returns(title);
+                title = title1;
                 fakeList.Add(_titleService.CreateTitle(title.Text));
+
             }
             _mockTitleRepository.Setup(r => r.GetTitles()).Returns(fakeList);
             Assert.NotEmpty(_titleService.GetTitles());
-            Assert.Equal(_titleService.GetTitles(), _expected);
         }
 
-        
+
         [Fact]
         public void Delete_Title_Method_Exists_And_Deletes_Given_Title()
         {
@@ -72,7 +74,8 @@ namespace qwertygroup.Domain.Test.Services
             int idToDelete = 1;
             _mockTitleRepository.Setup(r => r.GetTitles()).Returns(_repoList);
             int intialSize = _titleService.GetTitles().Count;
-            _mockTitleRepository.Setup(r => r.DeleteTitle(idToDelete)).Callback(() => _repoList.RemoveAll(t => t.Id == idToDelete));
+            _mockTitleRepository.Setup(r => r.DeleteTitle(idToDelete))
+            .Callback(() => _repoList.RemoveAll(t => t.Id == idToDelete));
 
             _titleService.DeleteTitle(idToDelete);
 
@@ -87,10 +90,10 @@ namespace qwertygroup.Domain.Test.Services
             //Setup the mock repository and define methods
             _mockTitleRepository.Setup(r => r.GetTitles()).Returns(_repoList);
             string message = "";
-            if(idToDelete<=0)
+            if (idToDelete <= 0)
                 message = "Id must be greater than 0!";
             else
-                message = $"No title with given id: {idToDelete}";
+                message = $"No Title with given id: {idToDelete}";
             _mockTitleRepository.Setup(r => r.DeleteTitle(idToDelete)).Callback(() =>
             {
                 if (idToDelete <= 0)
@@ -102,7 +105,7 @@ namespace qwertygroup.Domain.Test.Services
             });
 
             string resMessage = Assert.Throws<System.InvalidOperationException>(() => _titleService.DeleteTitle(idToDelete)).Message;
-            Assert.Equal(resMessage,message);
+            Assert.Equal(resMessage, message);
         }
 
         [Fact]
