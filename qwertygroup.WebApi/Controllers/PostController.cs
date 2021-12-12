@@ -12,7 +12,6 @@ namespace qwertygroup.WebApi.Controllers
     public class PostController : Controller
     {
 
-        //TODO finish testing for this class, i was too lazy
         private readonly IPostService _postService;
         private readonly IBodyService _bodyService;
         private readonly ITitleService _titleService;

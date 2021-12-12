@@ -28,6 +28,7 @@ namespace qwertygroup.Domain.Test.IRepositories
             mock.Setup(r => r.GetBodies()).Returns(fakeList);
 
             var repository = mock.Object;
+            Assert.IsAssignableFrom<IEnumerable<Body>>(repository.GetBodies());
             Assert.Equal(fakeList, repository.GetBodies());
         }
 

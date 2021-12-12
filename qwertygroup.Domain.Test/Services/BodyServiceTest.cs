@@ -42,7 +42,7 @@ namespace qwertygroup.Domain.Test.Services
         }
 
         [Fact]
-        public void GetBodies_CallsBodyRepositoriesFindAll_ExactlyOnce()
+        public void GetBodies_CallsBodyRepositoriesGetBodies_ExactlyOnce()
         {
             _bodyService.GetBodies();
             _mockBodyRepository.Verify(r => r.GetBodies(), Times.Once);
@@ -55,12 +55,13 @@ namespace qwertygroup.Domain.Test.Services
             foreach (Body body in _expected)
             {
                 _mockBodyRepository.Setup(r => r.CreateBody(body.Text))
+                .Callback(() => fakeList.Add(new Body { Text = body.Text }))
                 .Returns(body);
-                fakeList.Add(_bodyService.CreateBody(body.Text));
+                _mockBodyRepository.Object.CreateBody(body.Text);
             }
             _mockBodyRepository.Setup(r => r.GetBodies()).Returns(fakeList);
             Assert.NotEmpty(_bodyService.GetBodies());
-            Assert.Equal(_bodyService.GetBodies(), _expected);
+            Assert.IsAssignableFrom<Body>(_bodyService.CreateBody("asd2"));
         }
 
         [Theory]
@@ -72,9 +73,7 @@ namespace qwertygroup.Domain.Test.Services
         [InlineData(16)]
         public void BodyService_CreateBody_Text_MustBeLongerThanThreeCharacters(int value)
         {
-            string concat = "";
-            for (int i = 0; i < value; i++)
-                concat += "1";
+            string concat = "".PadRight(value);
             if (value <= 3)
                 Assert.True(
                     Assert.Throws<System.InvalidOperationException>(() =>
@@ -91,7 +90,8 @@ namespace qwertygroup.Domain.Test.Services
             int idToDelete = 1;
             _mockBodyRepository.Setup(r => r.GetBodies()).Returns(_repoList);
             int intialSize = _bodyService.GetBodies().Count;
-            _mockBodyRepository.Setup(r => r.DeleteBody(idToDelete)).Callback(() => _repoList.RemoveAll(b => b.Id == idToDelete));
+            _mockBodyRepository.Setup(r => r.DeleteBody(idToDelete))
+            .Callback(() => _repoList.RemoveAll(b => b.Id == idToDelete));
 
             _bodyService.DeleteBody(idToDelete);
 

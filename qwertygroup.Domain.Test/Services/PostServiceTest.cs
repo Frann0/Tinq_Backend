@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Moq;
 using qwertygroup.Core.IServices;
 using qwertygroup.Core.Models;
+using qwertygroup.DataAccess.Entities;
 using qwertygroup.Domain.IRepositories;
 using qwertygroup.Domain.Services;
 using Xunit;
@@ -13,7 +15,7 @@ namespace qwertygroup.Domain.Test.Services
     {
         private readonly IPostService _postService;
         private readonly Mock<IPostRepository> _mock;
-        
+
         private readonly Mock<IPostTagRepository> _postTagMock;
         private readonly IPostRepository _mockPostRepository;
         private readonly IPostTagRepository _mockPostTagRepository;
@@ -29,14 +31,14 @@ namespace qwertygroup.Domain.Test.Services
             _mock.Setup(r => r.CreatePost(_expectedPost)).Returns(_expectedPost);
             _mock.Setup(r => r.DeletePost(_expected[0])).Callback(() => _expected.Remove(_expected[0]));
             _mockPostRepository = _mock.Object;
-            _mockPostTagRepository=_postTagMock.Object;
-            _postService = new PostService(_mockPostRepository,_mockPostTagRepository);
+            _mockPostTagRepository = _postTagMock.Object;
+            _postService = new PostService(_mockPostRepository, _mockPostTagRepository);
         }
 
         [Fact]
         public void PostService_Exists_And_Extends_IPostService()
         {
-            IPostService ps = new PostService(_mockPostRepository,_mockPostTagRepository);
+            IPostService ps = new PostService(_mockPostRepository, _mockPostTagRepository);
             Assert.NotNull(ps);
             Assert.IsAssignableFrom<IPostService>(ps);
         }
@@ -46,7 +48,7 @@ namespace qwertygroup.Domain.Test.Services
         {
             IPostService ps;
             Assert.Equal(
-            Assert.Throws<MissingFieldException>(() => ps = new PostService(null,null)).Message,
+            Assert.Throws<MissingFieldException>(() => ps = new PostService(null, null)).Message,
             "PostService must have a PostRepository!");
         }
 
@@ -76,6 +78,28 @@ namespace qwertygroup.Domain.Test.Services
             int count = _expected.Count;
             _postService.DeletePost(_expected[0]);
             Assert.True(count > _expected.Count);
+        }
+
+        [Fact]
+        public void PostService_HasCreatePostTagRelation_Method()
+        {
+            Mock<IPostTagRepository> mock = new Mock<IPostTagRepository>();
+            mock.Setup(r => r.CreatePostTagRelationship(1, 1));
+        }
+
+        [Fact]
+        public void PostService_Has_RemoveTagFromPost_Method()
+        {
+            Mock<IPostTagRepository> mock = new Mock<IPostTagRepository>();
+            mock.Setup(r => r.RemoveTagFromPost(1, 1));
+        }
+
+        [Fact]
+        public void PostService_has_RemovePostTags_Method()
+        {
+
+            Mock<IPostTagRepository> mock = new Mock<IPostTagRepository>();
+            mock.Setup(r => r.RemovePostTags(1));
         }
     }
 }
