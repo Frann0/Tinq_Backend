@@ -145,7 +145,18 @@ namespace qwertygroup.WebApi.Controllers
         [HttpPost()]
         public ActionResult<bool> AssignAdminUserPermission(UserDto userDto)
         {
+            if (InputValidator(userDto))
+            {
+                return BadRequest("Invalid user information");
+            }
+            
             var user = _authService.FindUser(userDto.Email);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+            
             return _authService.AssignAdminPermissionToUser(user);
         }
 
@@ -153,7 +164,18 @@ namespace qwertygroup.WebApi.Controllers
         [HttpDelete()]
         public ActionResult<bool> RemoveAdminUserPermission(UserDto userDto)
         {
+            if (InputValidator(userDto))
+            {
+                return BadRequest("Invalid user information");
+            }
+            
             var user = _authService.FindUser(userDto.Email);
+            
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+            
             return _authService.RemoveAdminPermissionFromUser(user);
         }
 
