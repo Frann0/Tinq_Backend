@@ -1,4 +1,3 @@
-
 using System.Linq;
 using qwertygroup.DataAccess.Entities;
 using qwertygroup.Domain.IRepositories;
@@ -16,12 +15,19 @@ namespace qwertygroup.DataAccess.Repositories
 
         public void CreatePostTagRelationship(int tagId, int postId)
         {
-            _context.postTags.Add(new PostTagEntity { postId = postId, tagId = tagId });
+            _context.postTags.Add(
+                new PostTagEntity
+                {
+                    PostId = postId,
+                    TagId = tagId
+                });
             _context.SaveChanges();
         }
+
         public void RemoveTagFromPost(int tagId, int postId)
         {
-            var query = _context.postTags.Where(pt => pt.postId == postId && pt.tagId == tagId);
+            //Gets PostTags, where postid and tagid matches the given ids
+            var query = _context.postTags.Where(pt => pt.PostId == postId && pt.TagId == tagId);
             foreach (var item in query.ToList())
             {
                 _context.postTags.Remove(item);
@@ -29,9 +35,11 @@ namespace qwertygroup.DataAccess.Repositories
             _context.SaveChanges();
         }
 
+        //Removes all tags from the given post
         public void RemovePostTags(int postId)
         {
-            var query = _context.postTags.Where(pt => pt.postId == postId);
+            //Gets all posts with the given postid
+            var query = _context.postTags.Where(pt => pt.PostId == postId);
             foreach (var item in query.ToList())
             {
                 _context.postTags.Remove(item);
@@ -39,7 +47,5 @@ namespace qwertygroup.DataAccess.Repositories
             _context.SaveChanges();
         }
 
-
-        
     }
 }

@@ -7,14 +7,13 @@ using qwertygroup.Domain.IRepositories;
 
 namespace qwertygroup.Domain.Services
 {
-    public class BodyService : MyIdentifyable,IBodyService
+    public class BodyService : MyIdentifyable, IBodyService
     {
         private IBodyRepository _bodyRepository;
 
         public BodyService(IBodyRepository bodyRepository)
         {
-            _bodyRepository = bodyRepository ?? throw new System.MissingFieldException(
-                "BodyService Must have a BodyRepository!");
+            _bodyRepository = bodyRepository ?? throw new System.MissingFieldException("BodyService Must have a BodyRepository!");
         }
 
         public List<Body> GetBodies()

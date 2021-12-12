@@ -32,6 +32,7 @@ namespace qwertygroup.Core.Test.IServices
             mockService.Setup(r => r.GetPost(1)).Returns(fakePost);
             Assert.IsAssignableFrom<Post>(mockService.Object.GetPost(1));
         }
+
         [Fact]
         public void IPostService_Has_DeletePost_Method()
         {
@@ -53,6 +54,7 @@ namespace qwertygroup.Core.Test.IServices
             var mockService = new Mock<IPostService>();
             mockService.Setup(r => r.RemoveTagFromPost(1,1));
         }
+        
         [Fact]
         public void IPostService_Has_RemovePostTags_Method(){
             var mockService = new Mock<IPostService>();

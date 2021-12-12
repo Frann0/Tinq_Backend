@@ -98,7 +98,6 @@ namespace qwertygroup.Domain.Test.Services
             Assert.True(_bodyService.GetBodies().Count < 2);
         }
 
-
         [Theory]
         [InlineData(-3)]
         [InlineData(3)]
@@ -140,7 +139,6 @@ namespace qwertygroup.Domain.Test.Services
 
             Assert.True(_repoList.First(b => b.Id == updatedBody.Id).Text == updatedBody.Text);
         }
-
 
         [Theory]
         [InlineData(-3)]

@@ -15,7 +15,6 @@ namespace qwertygroup.Domain.Test.Services
     {
         private readonly IPostService _postService;
         private readonly Mock<IPostRepository> _mock;
-
         private readonly Mock<IPostTagRepository> _postTagMock;
         private readonly IPostRepository _mockPostRepository;
         private readonly IPostTagRepository _mockPostTagRepository;
@@ -28,7 +27,7 @@ namespace qwertygroup.Domain.Test.Services
             _mock = new Mock<IPostRepository>();
             _postTagMock = new Mock<IPostTagRepository>();
             _mock.Setup(r => r.GetAllPosts()).Returns(_expected);
-            _mock.Setup(r => r.CreatePost(_expectedPost)).Returns(_expectedPost);
+            _mock.Setup(r => r.CreatePost(_expectedPost)).Callback(() => _expected.Add(_expectedPost)).Returns(_expectedPost);
             _mock.Setup(r => r.DeletePost(_expected[0])).Callback(() => _expected.Remove(_expected[0]));
             _mockPostRepository = _mock.Object;
             _mockPostTagRepository = _postTagMock.Object;
@@ -39,6 +38,7 @@ namespace qwertygroup.Domain.Test.Services
         public void PostService_Exists_And_Extends_IPostService()
         {
             IPostService ps = new PostService(_mockPostRepository, _mockPostTagRepository);
+
             Assert.NotNull(ps);
             Assert.IsAssignableFrom<IPostService>(ps);
         }
@@ -56,6 +56,7 @@ namespace qwertygroup.Domain.Test.Services
         public void PostService_Has_GetAllPostsMethod_And_Returns_List_Of_Posts()
         {
             _mock.Setup(r => r.GetAllPosts()).Returns(_expected);
+
             Assert.Equal(_postService.GetAllPosts(), _expected);
         }
 
@@ -66,6 +67,7 @@ namespace qwertygroup.Domain.Test.Services
         {
             Assert.Equal(_postService.GetPost(id), _expected[id - 1]);
         }
+
         [Fact]
         public void PostService_HasCreatePostMethod_And_Returns_TheCreatedPost()
         {
@@ -84,6 +86,7 @@ namespace qwertygroup.Domain.Test.Services
         public void PostService_HasCreatePostTagRelation_Method()
         {
             Mock<IPostTagRepository> mock = new Mock<IPostTagRepository>();
+
             mock.Setup(r => r.CreatePostTagRelationship(1, 1));
         }
 
@@ -91,14 +94,15 @@ namespace qwertygroup.Domain.Test.Services
         public void PostService_Has_RemoveTagFromPost_Method()
         {
             Mock<IPostTagRepository> mock = new Mock<IPostTagRepository>();
+
             mock.Setup(r => r.RemoveTagFromPost(1, 1));
         }
 
         [Fact]
         public void PostService_has_RemovePostTags_Method()
         {
-
             Mock<IPostTagRepository> mock = new Mock<IPostTagRepository>();
+            
             mock.Setup(r => r.RemovePostTags(1));
         }
     }

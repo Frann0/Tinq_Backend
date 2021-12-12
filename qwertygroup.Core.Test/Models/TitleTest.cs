@@ -6,7 +6,8 @@ namespace qwertygroup.Core.Test.Models
     public class TitleTest
     {
         private Title _title;
-        public TitleTest(){
+        public TitleTest()
+        {
             _title = new Title();
         }
 

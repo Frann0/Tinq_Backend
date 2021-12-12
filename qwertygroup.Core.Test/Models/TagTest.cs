@@ -6,7 +6,8 @@ namespace qwertygroup.Core.Test.Models
     public class TagTest
     {
         private Tag _tag;
-        public TagTest(){
+        public TagTest()
+        {
             _tag = new Tag();
         }
 

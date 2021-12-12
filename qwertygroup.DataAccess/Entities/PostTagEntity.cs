@@ -1,9 +1,8 @@
 namespace qwertygroup.DataAccess.Entities
-{
-    public class PostTagEntity
+{    public class PostTagEntity
     {
-        public int id{get;set;}
-        public int postId{get;set;}
-        public int tagId{get;set;}
+        public int Id { get; set; }
+        public int PostId { get; set; }
+        public int TagId { get; set; }
     }
 }

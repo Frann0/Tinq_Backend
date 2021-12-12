@@ -1,5 +1,3 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -7,22 +5,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using qwertygroup.Core.IServices;
 using qwertygroup.DataAccess;
 using qwertygroup.DataAccess.Entities;
-using qwertygroup.DataAccess.Repositories;
-using qwertygroup.Domain.IRepositories;
-using qwertygroup.Domain.Services;
 using qwertygroup.Security;
-using qwertygroup.Security.IRepositories;
 using qwertygroup.Security.IServices;
-using qwertygroup.Security.Repositories;
-using qwertygroup.Security.Services;
 using qwertygroup.WebApi.Extensions;
 using qwertygroup.WebApi.Middleware;
-using qwertygroup.WebApi.PolicyHandlers;
 
 namespace qwertygroup.WebApi
 {
@@ -128,9 +116,9 @@ namespace qwertygroup.WebApi
                 Id = 2,
                 Text = "Wowza"
             });
-            postContext.postTags.Add(new PostTagEntity { postId = 1, tagId = 1 });
-            postContext.postTags.Add(new PostTagEntity { postId = 1, tagId = 2 });
-            postContext.postTags.Add(new PostTagEntity { postId = 2, tagId = 2 });
+            postContext.postTags.Add(new PostTagEntity { PostId = 1, TagId = 1 });
+            postContext.postTags.Add(new PostTagEntity { PostId = 1, TagId = 2 });
+            postContext.postTags.Add(new PostTagEntity { PostId = 2, TagId = 2 });
             postContext.posts.Add(new PostEntity { Id = 1, TitleId = 1, BodyId = 1, UserId = 1 });
             postContext.posts.Add(new PostEntity { Id = 2, TitleId = 2, BodyId = 2, UserId = 1 });
             postContext.SaveChanges();

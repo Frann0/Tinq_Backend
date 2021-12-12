@@ -53,19 +53,20 @@ namespace qwertygroup.Domain.Test.Services
         {
             Title title = new Title();
             List<Title> fakeList = new List<Title>();
+
             _mockTitleRepository.Setup(r => r.CreateTitle(title.Text))
                .Returns(title)
                .Callback(() => fakeList.Add(_titleService.CreateTitle(title.Text)));
+
             foreach (Title title1 in _expected)
             {
                 title = title1;
                 fakeList.Add(_titleService.CreateTitle(title.Text));
-
             }
+
             _mockTitleRepository.Setup(r => r.GetTitles()).Returns(fakeList);
             Assert.NotEmpty(_titleService.GetTitles());
         }
-
 
         [Fact]
         public void Delete_Title_Method_Exists_And_Deletes_Given_Title()
@@ -73,9 +74,10 @@ namespace qwertygroup.Domain.Test.Services
             //Setup the mock repository and define methods
             int idToDelete = 1;
             _mockTitleRepository.Setup(r => r.GetTitles()).Returns(_repoList);
+
             int intialSize = _titleService.GetTitles().Count;
             _mockTitleRepository.Setup(r => r.DeleteTitle(idToDelete))
-            .Callback(() => _repoList.RemoveAll(t => t.Id == idToDelete));
+                .Callback(() => _repoList.RemoveAll(t => t.Id == idToDelete));
 
             _titleService.DeleteTitle(idToDelete);
 
@@ -89,11 +91,13 @@ namespace qwertygroup.Domain.Test.Services
         {
             //Setup the mock repository and define methods
             _mockTitleRepository.Setup(r => r.GetTitles()).Returns(_repoList);
+
             string message = "";
             if (idToDelete <= 0)
                 message = "Id must be greater than 0!";
             else
                 message = $"No Title with given id: {idToDelete}";
+
             _mockTitleRepository.Setup(r => r.DeleteTitle(idToDelete)).Callback(() =>
             {
                 if (idToDelete <= 0)
@@ -119,6 +123,7 @@ namespace qwertygroup.Domain.Test.Services
             {
                 _repoList.First(t => t.Id == updatedTitle.Id).Text = updatedTitle.Text;
             });
+            
             _titleService.UpdateTitle(updatedTitle);
 
             Assert.True(_repoList.First(b => b.Id == updatedTitle.Id).Text == updatedTitle.Text);

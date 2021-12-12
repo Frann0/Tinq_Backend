@@ -13,10 +13,8 @@ namespace qwertygroup.Domain.Services
 
         public TitleService(ITitleRepository titleRepository)
         {
-            _titleRepository = titleRepository ?? throw new System.MissingFieldException(
-                "TitleService Must have a TitleRepository!");
+            _titleRepository = titleRepository ?? throw new System.MissingFieldException("TitleService Must have a TitleRepository!");
         }
-
 
         public List<Title> GetTitles()
         {

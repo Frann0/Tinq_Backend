@@ -6,7 +6,8 @@ namespace qwertygroup.Core.Test.Models
     public class PostTest
     {
         private Post _Post;
-        public PostTest(){
+        public PostTest()
+        {
             _Post = new Post();
         }
 
@@ -30,7 +31,7 @@ namespace qwertygroup.Core.Test.Models
             Post.Id = 1;
             Assert.Equal(1, Post.Id);
         }
-        
+
         [Fact]
         public void Post_BodyId_MustBeInt()
         {
@@ -44,6 +45,7 @@ namespace qwertygroup.Core.Test.Models
             Post.BodyId = 1;
             Assert.Equal(1, Post.BodyId);
         }
+        
         [Fact]
         public void Post_TitleId_MustBeInt()
         {
