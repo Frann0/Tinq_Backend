@@ -36,6 +36,7 @@ namespace qwertygroup.Security.Services
             if (!Authenticate(user, password))
                 return new JwtToken
                 {
+                    Token = null,
                     Message = "Email or Password not correct"
                 };
 

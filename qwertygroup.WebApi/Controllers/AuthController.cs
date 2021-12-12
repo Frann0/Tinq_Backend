@@ -33,19 +33,25 @@ namespace qwertygroup.WebApi.Controllers
         [HttpPost(nameof(Login))]
         public ActionResult<UserDto> Login([FromBody] LoginDto loginDto)
         {
-            // validate
-
-            var result =  InputValidator(loginDto);
+            if (!ModelState.IsValid || loginDto.Password == null)
+            {
+                return BadRequest("User Registration Failed");
+            }
             
             var authUser = _authService.FindUser(loginDto.Email);
-            
 
             if (authUser == null)
             {
-                return BadRequest("Login failed");
+                return Unauthorized("No user account associated with email");
             }
 
             var token = _authService.GenerateJwtToken(authUser, loginDto.Password);
+
+            if (token.Token == null)
+            {
+                return Unauthorized(token);
+            }
+            
             return new UserDto()
             {
                 Id = authUser.Id,
@@ -65,19 +71,18 @@ namespace qwertygroup.WebApi.Controllers
         [HttpPost(nameof(Register))]
         public ActionResult<bool> Register([FromBody] RegisterDto registerDto)
         {
-            
-            if (!ModelState.IsValid && registerDto == null) 
+            if (InputValidator(registerDto)) 
             {
                 return BadRequest("User Registration Failed");
             }
 
             var userQuery = _authService.FindUser(registerDto.Email);
+            
             if (userQuery != null)
             {
                 return BadRequest("Email already registered to another user.");
             }
             
-
             var authUser = new AuthUser()
             {
                 Username = UsernameGenerator.GenerateRandomUsername(),
@@ -99,6 +104,12 @@ namespace qwertygroup.WebApi.Controllers
                 Email = u.Email,
                 Id = u.Id
             }).ToList();
+
+            if (!users.Any())
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
             return users;
         }
         
@@ -108,7 +119,12 @@ namespace qwertygroup.WebApi.Controllers
         [HttpDelete("deleteprofile")]
         public ActionResult DeleteProfile([FromBody] UserDto userDto)
         {
+            if (InputValidator(userDto))
+            {
+                return BadRequest("Invalid user information");
+            }
             var user = _authService.FindUser(userDto.Username);
+            
             return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
         }
         
@@ -116,7 +132,12 @@ namespace qwertygroup.WebApi.Controllers
         [HttpDelete("deleteuser")]
         public ActionResult<bool> AdminDeleteUser([FromBody] UserDto userDto)
         {
+            if (InputValidator(userDto))
+            {
+                return BadRequest("Invalid user information");
+            }
             var user = _authService.FindUser(userDto.Username);
+            
             return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
         }
         
@@ -138,7 +159,7 @@ namespace qwertygroup.WebApi.Controllers
 
         private bool InputValidator<T>(T input)
         {
-            return ModelState.IsValid;
+            return !ModelState.IsValid || input == null;
         }
     }
 }
