@@ -70,7 +70,7 @@ namespace qwertygroup.WebApi
                 options.AddPolicy("Prod-cors", policy =>
                 {
                     policy
-                        .WithOrigins("https://tinq.online/")
+                        .AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
