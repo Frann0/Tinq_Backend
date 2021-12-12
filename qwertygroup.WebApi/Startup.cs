@@ -70,7 +70,7 @@ namespace qwertygroup.WebApi
                 options.AddPolicy("Prod-cors", policy =>
                 {
                     policy
-                        .WithOrigins("https://tinq.online")
+                        .WithOrigins("http://tinq.online")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -139,7 +139,6 @@ namespace qwertygroup.WebApi
             postContext.posts.Add(new PostEntity { Id = 2, TitleId = 2, BodyId = 2, UserId = 1 });
             postContext.SaveChanges();
             #endregion
-            
             
             app.UseHttpsRedirection();
             app.UseMiddleware<JwtMiddleware>();
