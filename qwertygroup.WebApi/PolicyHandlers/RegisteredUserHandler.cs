@@ -20,7 +20,7 @@ namespace qwertygroup.WebApi.PolicyHandlers
                 var defaultContext = context.Resource as DefaultHttpContext;
                 var authService = defaultContext.HttpContext.RequestServices.GetRequiredService<IAuthService>();
                 var permissions = authService.GetPermissions(id);
-                if (permissions.Exists(p => p.Name.Equals("Registered")))
+                if (permissions.Exists(p => p.Name.Equals("RegisteredUser")))
                 {
                     context.Succeed(requirementHandler);
                 }
