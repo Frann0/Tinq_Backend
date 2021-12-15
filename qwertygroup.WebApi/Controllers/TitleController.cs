@@ -9,6 +9,7 @@ using qwertygroup.WebApi.Dtos;
 
 namespace qwertygroup.WebApi.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     public class TitleController : Controller
     {
@@ -19,7 +20,8 @@ namespace qwertygroup.WebApi.Controllers
             _titleService = titleService;
         }
 
-        
+
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult<IEnumerable<TitleDto>> getAllTitles()
         {
@@ -27,13 +29,16 @@ namespace qwertygroup.WebApi.Controllers
                 newTitle => new TitleDto { Text = newTitle.Text }
             ).ToList());
         }
-        
+
+        [AllowAnonymous]
         [HttpGet("{id}")]
-        public ActionResult<TitleDto> getTitle(int id){
+        public ActionResult<TitleDto> getTitle(int id)
+        {
             _titleService.GetTitle(id);
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult<Title> CreateTitle([FromBody] TitleDto titleDto)
         {

@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using qwertygroup.Core.IServices;
 using qwertygroup.Core.Models;
 using qwertygroup.WebApi.Dtos;
+using qwertygroup.WebApi.PolicyHandlers;
 
 namespace qwertygroup.WebApi.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     public class PostController : Controller
     {
@@ -22,23 +25,26 @@ namespace qwertygroup.WebApi.Controllers
             _postService = postService;
             _bodyService = bodyService;
             _titleService = titleService;
-            _tagService=tagService;
+            _tagService = tagService;
         }
 
+        [AllowAnonymous]
         [HttpGet("/posts")]
         public ActionResult<IEnumerable<PostDto>> GetAllPosts()
         {
             return Ok(_postService.GetAllPosts().Select(
                 post => new PostDto(post)));
         }
-        
+
+        [AllowAnonymous]
         [HttpGet("/posts/{userId}")]
         public ActionResult<IEnumerable<PostDto>> GetPostsByUserID(int userId)
         {
             return Ok(_postService.GetPostByUserID(userId).Select(
                 post => new PostDto(post)));
         }
-        
+
+        [AllowAnonymous]
         [HttpGet("/search/{query}")]
         public ActionResult<IEnumerable<PostDto>> GetPostsByUserID(string query)
         {
@@ -46,6 +52,7 @@ namespace qwertygroup.WebApi.Controllers
                 post => new PostDto(post)));
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public ActionResult<PostDto> GetPost(int id)
         {
@@ -53,15 +60,18 @@ namespace qwertygroup.WebApi.Controllers
             return Ok(new PostDto(post));
         }
 
-        [HttpPost("/{postId}/"+"{tag}")]
-        public ActionResult<Post> AddPostTagRelation(int postId, string tag){
-            Tag tagWithId = _tagService.CreateTag(new Tag{Text=tag});
-            _postService.CreatePostTagRelation(postId,tagWithId.Id);
+        [Authorize(nameof(RegisteredUserHandler))]
+        [HttpPost("/{postId}/{tag}")]
+        public ActionResult<Post> AddPostTagRelation(int postId, string tag)
+        {
+            Tag tagWithId = _tagService.CreateTag(new Tag { Text = tag });
+            _postService.CreatePostTagRelation(postId, tagWithId.Id);
             return Ok();
         }
 
+        [Authorize(nameof(RegisteredUserHandler))]
         [HttpPost]
-        public ActionResult<PostDto> CreatePost([FromQuery]String titleText, String bodyText, int userId, String tags)
+        public ActionResult<PostDto> CreatePost([FromQuery] String titleText, String bodyText, int userId, String tags)
         {
             Body body = _bodyService.CreateBody(bodyText);
             Title title = _titleService.CreateTitle(titleText);
@@ -73,31 +83,55 @@ namespace qwertygroup.WebApi.Controllers
                 Body = bodyText,
                 UserId = userId
             });
-            List<Tag> tagList = tags.Split(",").Select(t=>_tagService.CreateTag(post.Id,new Tag{Text=t})).ToList();
-            post.Tags=tagList;
+            List<Tag> tagList = tags.Split(",").Select(t => _tagService.CreateTag(post.Id, new Tag { Text = t })).ToList();
+            post.Tags = tagList;
             return Ok(new PostDto(post));
         }
 
-//TODO SHOULD BE AUTHORIZED
+        [Authorize(nameof(RegisteredUserHandler))]
         [HttpPatch]
-        public ActionResult<PostDto> UpdatePost([FromQuery]String titleText, String bodyText, int postId)
+        public ActionResult<PostDto> UpdatePost([FromQuery] String titleText, String bodyText, int postId)
         {
             Post post = _postService.GetPost(postId);
-            _titleService.UpdateTitle(new Title{Id=post.TitleId,Text=titleText});
-            _bodyService.UpdateBody(new Body{Id=post.BodyId,Text=bodyText});
+            _titleService.UpdateTitle(new Title { Id = post.TitleId, Text = titleText });
+            _bodyService.UpdateBody(new Body { Id = post.BodyId, Text = bodyText });
             return Ok(new PostDto(_postService.GetPost(postId)));
         }
 
-//TODO SHOULD BE AUTHORIZED
+        [Authorize(nameof(RegisteredUserHandler))]
+        [HttpDelete("/del/{postId}/{userId}")]
+        public ActionResult DeletePost(int postId, int userId)
+        {
+            try
+            {
+                Post post = _postService.GetPost(postId);
+                if (post.UserId != userId)
+                    return BadRequest("You must be owner of a post to delete it!");
+                _titleService.DeleteTitle(post.TitleId);
+                _bodyService.DeleteBody(post.BodyId);
+                _postService.DeletePost(post);
+                return Ok("Post deleted.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [Authorize(nameof(AdminUserHandler))]
         [HttpDelete("/del/{postId}")]
-        public ActionResult DeletePost(int postId){
-            try{
-            Post post = _postService.GetPost(postId);
-            _titleService.DeleteTitle(post.TitleId);
-            _bodyService.DeleteBody(post.BodyId);
-            _postService.DeletePost(post);
-            return Ok("Post deleted.");
-            }catch(Exception e){
+        public ActionResult DeletePost(int postId)
+        {
+            try
+            {
+                Post post = _postService.GetPost(postId);
+                _titleService.DeleteTitle(post.TitleId);
+                _bodyService.DeleteBody(post.BodyId);
+                _postService.DeletePost(post);
+                return Ok("Post deleted.");
+            }
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
         }
