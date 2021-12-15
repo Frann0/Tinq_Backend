@@ -23,9 +23,7 @@ namespace qwertygroup.WebApi.Extensions
             services.AddScoped<ITitleService, TitleService>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IPostService, PostService>();
-
             services.AddScoped<IAuthUserRepository, AuthUserRepository>();
-            services.AddScoped<IAuthUserService, AuthUserService>();
             services.AddScoped<IAuthService, AuthService>();
             
             return services;
