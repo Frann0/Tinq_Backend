@@ -53,10 +53,10 @@ namespace qwertygroup.Security.Test.IRepository
         }
         
         [Fact]
-        public void IAuthUserRepository_HasGetAllUserPermissionsUserMethod()
+        public void IAuthUserRepository_HasGetAllUsersWithPermissionsUserMethod()
         {
             var method = typeof(IAuthUserRepository)
-                .GetMethods().FirstOrDefault(m => "GetAllUserPermissions".Equals(m.Name));
+                .GetMethods().FirstOrDefault(m => "GetAllUsersWithPermissions".Equals(m.Name));
             Assert.NotNull(method);
         }
         
