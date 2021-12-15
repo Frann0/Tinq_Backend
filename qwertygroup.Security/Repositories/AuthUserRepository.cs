@@ -9,8 +9,9 @@ namespace qwertygroup.Security.Repositories
     public class AuthUserRepository : IAuthUserRepository
     {
         private readonly AuthDbContext _authDbContext;
-        private const int REGISTERED_USER_PERMISSION_ID = 1;
-        private const int ADMIN_USER_PERMISSION_ID = 2;
+        private const int ADMIN_USER_PERMISSION_ID = 1;
+        private const int REGISTERED_USER_PERMISSION_ID = 2;
+        
         public AuthUserRepository(AuthDbContext authDbContext)
         {
             _authDbContext = authDbContext;

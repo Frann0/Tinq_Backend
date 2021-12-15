@@ -38,7 +38,6 @@ namespace qwertygroup.WebApi
             services.AddAuthServices(_configuration);
             services.AddSwaggerDocumentation();
             
-            services.AddDbContext<PostContext>(options => options.UseSqlite("Data Source=main.db"));
             services.AddDbContext<AuthDbContext>(options => options.UseSqlite(_configuration.GetConnectionString("AuthConnection")));
             services.AddDbContext<PostContext>(options =>
             {
