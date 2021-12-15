@@ -10,6 +10,7 @@ using qwertygroup.WebApi.PolicyHandlers;
 
 namespace qwertygroup.WebApi.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     public class BodyController : Controller
     {
@@ -20,7 +21,7 @@ namespace qwertygroup.WebApi.Controllers
             _bodyService = bodyService;
         }
         
-        [Authorize(nameof(RegisteredUserHandler))]
+        [AllowAnonymous]
         [HttpGet]
         public ActionResult<IEnumerable<BodyDto>> GetAllBodies()
         {
@@ -28,12 +29,15 @@ namespace qwertygroup.WebApi.Controllers
                 newBody => new BodyDto { Text = newBody.Text }
                 ).ToList());
         }
+
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public ActionResult<TitleDto> GetBody(int id){
             _bodyService.GetBody(id);
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult<Body> CreateBody([FromBody] BodyDto bodyDto)
         {
