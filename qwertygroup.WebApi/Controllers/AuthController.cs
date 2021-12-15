@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -66,6 +67,28 @@ namespace qwertygroup.WebApi.Controllers
             };
         }
 
+        [HttpGet(nameof(GetCurrentUser))]
+        [Authorize]
+        public ActionResult<UserDto> GetCurrentUser()
+        {
+
+            var authUser = HttpContext.Items["LoginUser"] as AuthUser;
+
+            if (authUser == null)
+            {
+                return NotFound("Current user not found!");
+            }
+
+            // Define whats needed to return
+            return new UserDto()
+            {
+                Id = authUser.Id,
+                Username = authUser.Username,
+                Email = authUser.Email,
+                Permissions = authUser.Permissions
+            };
+
+        }
 
         [AllowAnonymous]
         [HttpPost(nameof(Register))]

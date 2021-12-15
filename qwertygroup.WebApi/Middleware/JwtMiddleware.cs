@@ -36,7 +36,7 @@ namespace qwertygroup.WebApi.Middleware
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_configuration["JwtConfig:Key"]);
+                var key = Encoding.ASCII.GetBytes(_configuration["JwtConfig:Secret"]);
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -51,16 +51,13 @@ namespace qwertygroup.WebApi.Middleware
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "Id").Value);
-                var userName = jwtToken.Claims.First(x => x.Type == "UserName").Value;
+                var email = jwtToken.Claims.First(x => x.Type == "Email").Value;
 
                 // attach account to context on successful jwt validation
-                context.Items["LoginUser"] = new AuthUser { Id = userId, Username = userName };
+                context.Items["LoginUser"] = new AuthUser { Id = userId, Email = email};
             }
-            catch(Exception e)
+            catch
             {
-                // do nothing if jwt validation fails
-                // account is not attached to context so request won't have access to secure routes
-                //...
             }
         }
     }
