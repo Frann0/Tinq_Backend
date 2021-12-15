@@ -46,25 +46,28 @@ namespace qwertygroup.WebApi.Controllers
                 return Unauthorized("No user account associated with email");
             }
 
-            var token = _authService.GenerateJwtToken(authUser, loginDto.Password);
+            if (_authService.Authenticate(authUser, loginDto.Password))
+            {
+                var token = _authService.GenerateJwtToken(authUser);
+                
 
-            if (token.Token == null)
-            {
-                return Unauthorized(token);
-            }
-            
-            return new UserDto()
-            {
-                Id = authUser.Id,
-                Username = authUser.Username,
-                Email = authUser.Email,
-                Permissions = authUser.Permissions,
-                Token = new TokenDto()
+                return new UserDto()
                 {
-                    Token = token.Token,
-                    Message = "Success!"
-                }
-            };
+                    Id = authUser.Id,
+                    Username = authUser.Username,
+                    Email = authUser.Email,
+                    Permissions = authUser.Permissions,
+                    Token = new TokenDto()
+                    {
+                        Token = token.Token,
+                        Message = "Success!"
+                    }
+                };
+            }
+            else
+            {
+                return Unauthorized("Authentication failed");
+            }
         }
 
         [HttpGet(nameof(GetCurrentUser))]
@@ -78,14 +81,18 @@ namespace qwertygroup.WebApi.Controllers
             {
                 return NotFound("Current user not found!");
             }
-
-            // Define whats needed to return
+            
             return new UserDto()
             {
                 Id = authUser.Id,
                 Username = authUser.Username,
                 Email = authUser.Email,
-                Permissions = authUser.Permissions
+                Permissions = authUser.Permissions,
+                Token = new TokenDto()
+                {
+                    Token = _authService.GenerateJwtToken(authUser).Token,
+                    Message = "Success!"
+                }
             };
 
         }
@@ -198,8 +205,19 @@ namespace qwertygroup.WebApi.Controllers
             {
                 return NotFound("User not found");
             }
-            
             return _authService.RemoveAdminPermissionFromUser(user);
+        }
+
+        [Authorize(nameof(AdminUserHandler))]
+        [HttpGet(nameof(GetAllUsersWithPermissions))]
+        public ActionResult<List<UserListDto>> GetAllUsersWithPermissions()
+        {
+            return _authService.GetAllUsersWithPermissions().Select(u => new UserListDto()
+            {
+                Username = u.Username,
+                Email = u.Email,
+                Permissions = u.Permissions
+            }).ToList();
         }
 
         private bool InputValidator<T>(T input)

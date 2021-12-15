@@ -11,9 +11,10 @@ namespace qwertygroup.Security.IServices
         bool AdminDeleteUser(AuthUser user);
         List<Permission> GetPermissions(int id);
         List<AuthUser> GetAllUsers();
+        IEnumerable<AuthUser> GetAllUsersWithPermissions();
         bool AssignAdminPermissionToUser(AuthUser user);
         bool RemoveAdminPermissionFromUser(AuthUser user);
-        JwtToken GenerateJwtToken(AuthUser user, string password);
+        JwtToken GenerateJwtToken(AuthUser user);
         bool Authenticate(AuthUser user, string password);
         string HashedPassword(string password, byte[] userSalt);
         byte[] CreateSalt();
