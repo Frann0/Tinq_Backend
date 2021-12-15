@@ -78,6 +78,11 @@ namespace qwertygroup.Security.Services
             return _userRepository.GetAllUsers();
         }
 
+        public IEnumerable<AuthUser> GetAllUsersWithPermissions()
+        {
+            return _userRepository.GetAllUsersWithPermissions();
+        }
+
         public bool AssignAdminPermissionToUser(AuthUser user)
         {
             return _userRepository.AssignAdminPermissionToUser(user);
@@ -88,9 +93,9 @@ namespace qwertygroup.Security.Services
             return _userRepository.RemoveAdminPermissionFromUser(user);
         }
 
-        public JwtToken GenerateJwtToken(AuthUser user, string password)
+        public JwtToken GenerateJwtToken(AuthUser user)
         {
-            return _jwtHelper.GenerateJwtToken(user, password);
+            return _jwtHelper.GenerateJwtToken(user);
         }
 
         public bool Authenticate(AuthUser user, string password)

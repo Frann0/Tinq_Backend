@@ -66,7 +66,7 @@ namespace qwertygroup.Security
                 },
                 new UserPermission()
                 {
-                    PermissionId = 1,
+                    PermissionId = 2,
                     UserId = 2
                 });
             _ctx.SaveChanges();

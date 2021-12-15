@@ -19,15 +19,8 @@ namespace qwertygroup.Security.Helpers
             _configuration = configuration;
         }
 
-        public JwtToken GenerateJwtToken(AuthUser user, string password)
+        public JwtToken GenerateJwtToken(AuthUser user)
         {
-            if (!Authenticate(user, password))
-                return new JwtToken
-                {
-                    Token = null,
-                    Message = "Email or Password not correct"
-                };
-
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(_configuration["JwtConfig:Issuer"],
