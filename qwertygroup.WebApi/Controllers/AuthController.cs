@@ -145,7 +145,7 @@ namespace qwertygroup.WebApi.Controllers
         
         
 
-        [Authorize(nameof(RegisteredUserHandler))]
+        [Authorize(nameof(AdminUserHandler))]
         [HttpDelete("deleteprofile")]
         public ActionResult DeleteProfile([FromBody] UserDto userDto)
         {
@@ -157,22 +157,9 @@ namespace qwertygroup.WebApi.Controllers
             
             return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
         }
-        
+
         [Authorize(nameof(AdminUserHandler))]
-        [HttpDelete("deleteuser")]
-        public ActionResult<bool> AdminDeleteUser([FromBody] UserDto userDto)
-        {
-            if (InputValidator(userDto))
-            {
-                return BadRequest("Invalid user information");
-            }
-            var user = _authService.FindUser(userDto.Username);
-            
-            return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
-        }
-        
-        [Authorize(nameof(AdminUserHandler))]
-        [HttpPost()]
+        [HttpPost("assignadmin")]
         public ActionResult<bool> AssignAdminUserPermission(UserDto userDto)
         {
             if (InputValidator(userDto))
@@ -191,7 +178,7 @@ namespace qwertygroup.WebApi.Controllers
         }
 
         [Authorize(nameof(AdminUserHandler))]
-        [HttpDelete()]
+        [HttpDelete("removeadmin")]
         public ActionResult<bool> RemoveAdminUserPermission(UserDto userDto)
         {
             if (InputValidator(userDto))
