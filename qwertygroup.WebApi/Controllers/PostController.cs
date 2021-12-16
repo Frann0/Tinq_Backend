@@ -118,7 +118,7 @@ namespace qwertygroup.WebApi.Controllers
             }
         }
 
-        [Authorize(nameof(AdminUserHandler))]
+        [Authorize(nameof(RegisteredUserHandler))]
         [HttpDelete("/del/{postId}")]
         public ActionResult DeletePost(int postId)
         {
