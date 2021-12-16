@@ -147,27 +147,27 @@ namespace qwertygroup.WebApi.Controllers
 
         [Authorize(nameof(AdminUserHandler))]
         [HttpDelete("deleteprofile")]
-        public ActionResult DeleteProfile([FromBody] UserDto userDto)
+        public ActionResult DeleteProfile([FromBody]UserDto userDto)
         {
             if (InputValidator(userDto))
             {
                 return BadRequest("Invalid user information");
             }
-            var user = _authService.FindUser(userDto.Username);
+            var user = _authService.FindUser(userDto.Email);
             
             return user != null ? Ok(_authService.DeleteUser(user)) : BadRequest("Delete user failed");
         }
 
         [Authorize(nameof(AdminUserHandler))]
-        [HttpPost("assignadmin")]
-        public ActionResult<bool> AssignAdminUserPermission(UserDto userDto)
+        [HttpPost("assignadmin/{email}")]
+        public ActionResult<bool> AssignAdminUserPermission(string email)
         {
-            if (InputValidator(userDto))
+            if (InputValidator(email))
             {
                 return BadRequest("Invalid user information");
             }
             
-            var user = _authService.FindUser(userDto.Email);
+            var user = _authService.FindUser(email);
 
             if (user == null)
             {
