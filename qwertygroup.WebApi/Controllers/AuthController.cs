@@ -36,14 +36,14 @@ namespace qwertygroup.WebApi.Controllers
         {
             if (!ModelState.IsValid || loginDto.Password == null)
             {
-                return BadRequest("User Registration Failed");
+                return BadRequest("Authentication failed");
             }
             
             var authUser = _authService.FindUser(loginDto.Email);
 
             if (authUser == null)
             {
-                return Unauthorized("No user account associated with email");
+                return Unauthorized("Authentication failed");
             }
 
             if (_authService.Authenticate(authUser, loginDto.Password))
@@ -57,11 +57,7 @@ namespace qwertygroup.WebApi.Controllers
                     Username = authUser.Username,
                     Email = authUser.Email,
                     Permissions = authUser.Permissions,
-                    Token = new TokenDto()
-                    {
-                        Token = token.Token,
-                        Message = "Success!"
-                    }
+                    Token = token.Token
                 };
             }
             else
@@ -75,7 +71,13 @@ namespace qwertygroup.WebApi.Controllers
         public ActionResult<UserDto> GetCurrentUser()
         {
 
-            var authUser = HttpContext.Items["LoginUser"] as AuthUser;
+            var httpContextUser = HttpContext.Items["LoginUser"] as AuthUser;
+            AuthUser authUser = null;
+            if (httpContextUser != null)
+            {
+                authUser = _authService.FindUser(httpContextUser.Email);
+            }
+            
 
             if (authUser == null)
             {
@@ -88,11 +90,7 @@ namespace qwertygroup.WebApi.Controllers
                 Username = authUser.Username,
                 Email = authUser.Email,
                 Permissions = authUser.Permissions,
-                Token = new TokenDto()
-                {
-                    Token = _authService.GenerateJwtToken(authUser).Token,
-                    Message = "Success!"
-                }
+                Token = _authService.GenerateJwtToken(authUser).Token
             };
 
         }
