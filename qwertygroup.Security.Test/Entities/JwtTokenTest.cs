@@ -25,12 +25,5 @@ namespace qwertygroup.Security.Test.Entities
             _token.Token = "test";
             Assert.Equal("test", _token.Token);
         }
-
-        [Fact]
-        public void JwtToken_SetMessage_StoresMessage()
-        {
-            _token.Message = "test";
-            Assert.Equal("test", _token.Message);
-        }
     }
 }

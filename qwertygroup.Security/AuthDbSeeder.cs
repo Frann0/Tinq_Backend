@@ -71,13 +71,5 @@ namespace qwertygroup.Security
                 });
             _ctx.SaveChanges();
         }
-        
-
-        public void SeedProduction()
-        {
-            _ctx.Database.EnsureDeleted();
-            _ctx.Database.EnsureCreated();
-        }
-        
     }
 }

@@ -36,13 +36,12 @@ namespace qwertygroup.Security.Helpers
             return new JwtToken
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
-                Message = "Ok"
             };
         }
         
         public bool Authenticate(AuthUser dbUser, string plainTextPassword)
         {
-            return dbUser != null && HashedPassword(plainTextPassword, dbUser.Salt)
+            return HashedPassword(plainTextPassword, dbUser.Salt)
                 .Equals(dbUser.HashedPassword);
         }
 
