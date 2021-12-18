@@ -101,7 +101,7 @@ namespace qwertygroup.WebApi.Controllers
         [HttpPost(nameof(Register))]
         public ActionResult<bool> Register([FromBody] RegisterDto registerDto)
         {
-            if (InputValidator(registerDto)) 
+            if (IsInvalidInput(registerDto)) 
             {
                 return BadRequest("User Registration Failed");
             }
@@ -149,7 +149,7 @@ namespace qwertygroup.WebApi.Controllers
         [HttpDelete("deleteprofile")]
         public ActionResult DeleteProfile([FromBody]UserDto userDto)
         {
-            if (InputValidator(userDto))
+            if (IsInvalidInput(userDto))
             {
                 return BadRequest("Invalid user information");
             }
@@ -162,7 +162,7 @@ namespace qwertygroup.WebApi.Controllers
         [HttpPost("assignadmin/{email}")]
         public ActionResult<bool> AssignAdminUserPermission(string email)
         {
-            if (InputValidator(email))
+            if (IsInvalidInput(email))
             {
                 return BadRequest("Invalid user information");
             }
@@ -181,7 +181,7 @@ namespace qwertygroup.WebApi.Controllers
         [HttpDelete("removeadmin")]
         public ActionResult<bool> RemoveAdminUserPermission(UserDto userDto)
         {
-            if (InputValidator(userDto))
+            if (IsInvalidInput(userDto))
             {
                 return BadRequest("Invalid user information");
             }
@@ -207,7 +207,7 @@ namespace qwertygroup.WebApi.Controllers
             }).ToList();
         }
 
-        private bool InputValidator<T>(T input)
+        private bool IsInvalidInput<T>(T input)
         {
             return !ModelState.IsValid || input == null;
         }

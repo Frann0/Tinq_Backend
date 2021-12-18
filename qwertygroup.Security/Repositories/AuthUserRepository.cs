@@ -69,8 +69,14 @@ namespace qwertygroup.Security.Repositories
 
         public bool DeleteUser(AuthUser user)
         {
-            var result = _authDbContext.AuthUsers.Remove(user);
-            return result != null;
+            var query = _authDbContext.AuthUsers.FirstOrDefault(u => u.Email == user.Email);
+            if (query != null)
+            {
+                var result = _authDbContext.AuthUsers.Remove(query);
+                _authDbContext.SaveChanges();
+                return result != null;
+            }
+            return false;
         }
 
         public bool CreateUser(AuthUser newUser)
