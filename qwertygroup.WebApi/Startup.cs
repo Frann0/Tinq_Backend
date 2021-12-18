@@ -59,8 +59,9 @@ namespace qwertygroup.WebApi
                 {
                     policy
                         .WithOrigins(
-                            "https://legosforlife2021.firebaseapp.com",
-                            "https://legosforlife2021.web.app")
+                            "https://tinq-34862.web.app",
+                            "https://tinq-34862.firebaseapp.com",
+                            "https://tinq.online")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -73,9 +74,14 @@ namespace qwertygroup.WebApi
         {
             if (env.IsDevelopment())
             {
+                app.UseCors("Dev-cors");
                 new AuthDbSeeder(authDbContext, authService).SeedDevelopment();
                 app.UseDeveloperExceptionPage();
                 app.UseSwaggerDocumentation();
+            }
+            else
+            {
+                app.UseCors("Prod-cors");
             }
             #region postDbtestdata
             postContext.Database.EnsureDeleted();
@@ -124,7 +130,7 @@ namespace qwertygroup.WebApi
             postContext.SaveChanges();
             #endregion
             
-            app.UseCors("Dev-cors");
+
             app.UseHttpsRedirection();
             app.UseMiddleware<JwtMiddleware>();
             app.UseRouting();
