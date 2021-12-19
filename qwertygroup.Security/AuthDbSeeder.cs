@@ -21,8 +21,8 @@ namespace qwertygroup.Security
         public void SeedDevelopment()
         {
             
-            _ctx.Database.EnsureDeleted();
-            _ctx.Database.EnsureCreated();
+            //_ctx.Database.EnsureDeleted();
+            if(_ctx.Database.EnsureCreated()){
             
             var password = "Pa$$w0rd";
             var salt = _authService.CreateSalt();
@@ -70,6 +70,7 @@ namespace qwertygroup.Security
                     UserId = 2
                 });
             _ctx.SaveChanges();
+            }
         }
     }
 }

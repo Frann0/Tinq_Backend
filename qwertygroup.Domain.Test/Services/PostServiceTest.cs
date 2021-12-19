@@ -102,7 +102,6 @@ namespace qwertygroup.Domain.Test.Services
         public void PostService_has_RemovePostTags_Method()
         {
             Mock<IPostTagRepository> mock = new Mock<IPostTagRepository>();
-            
             mock.Setup(r => r.RemovePostTags(1));
         }
     }

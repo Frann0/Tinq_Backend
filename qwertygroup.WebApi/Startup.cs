@@ -84,52 +84,52 @@ namespace qwertygroup.WebApi
                 new AuthDbSeeder(authDbContext, authService).SeedDevelopment();
                 app.UseCors("Prod-cors");
             }
-            #region postDbtestdata
-            postContext.Database.EnsureDeleted();
             postContext.Database.EnsureCreated();
-            postContext.bodies.Add(new BodyEntity
-            {
-                Id = 1,
-                Text = "The difference between my darkness and your darkness is that I can look at my own badness in the face and accept its existence while you are busy covering your mirror with a white linen sheet. The difference between my sins and your sins is that when I sin I know I'm sinning while you have actually fallen prey to your own fabricated illusions. I am a siren, a mermaid; I know that I am beautiful while basking on the ocean's waves and I know that I can eat flesh and bones at the bottom of the sea. You are a white witch, a wizard; your spells are manipulations and your cauldron from hell yet you wrap yourself in white and wear a silver wig."
-            });
-            postContext.bodies.Add(new BodyEntity
-            {
-                Id = 2,
-                Text = "One of the greatest regrets in life is being what others would want you to be, rather than being yourself."
-            });
-            postContext.bodies.Add(new BodyEntity
-            {
-                Id = 3,
-                Text = "What's the whole point of being pretty on the outside when you’re so ugly on the inside?"
-            });
-            postContext.titles.Add(new TitleEntity
-            {
-                Id = 1,
-                Text = "Pepe clap is strong"
-            });
-            postContext.titles.Add(new TitleEntity
-            {
-                Id = 2,
-                Text = "Potatoes ruin society"
-            });
-
-            postContext.tags.Add(new TagEntity
-            {
-                Id = 1,
-                Text = "Good"
-            });
-            postContext.tags.Add(new TagEntity
-            {
-                Id = 2,
-                Text = "Wowza"
-            });
-            postContext.postTags.Add(new PostTagEntity { PostId = 1, TagId = 1 });
-            postContext.postTags.Add(new PostTagEntity { PostId = 1, TagId = 2 });
-            postContext.postTags.Add(new PostTagEntity { PostId = 2, TagId = 2 });
-            postContext.posts.Add(new PostEntity { Id = 1, TitleId = 1, BodyId = 1, UserId = 1 });
-            postContext.posts.Add(new PostEntity { Id = 2, TitleId = 2, BodyId = 2, UserId = 1 });
-            postContext.SaveChanges();
-            #endregion
+            //#region postDbtestdata
+            //postContext.Database.EnsureDeleted();
+            //postContext.bodies.Add(new BodyEntity
+            //{
+            //    Id = 1,
+            //    Text = "The difference between my darkness and your darkness is that I can look at my own badness in the face and accept its existence while you are busy covering your mirror with a white linen sheet. The difference between my sins and your sins is that when I sin I know I'm sinning while you have actually fallen prey to your own fabricated illusions. I am a siren, a mermaid; I know that I am beautiful while basking on the ocean's waves and I know that I can eat flesh and bones at the bottom of the sea. You are a white witch, a wizard; your spells are manipulations and your cauldron from hell yet you wrap yourself in white and wear a silver wig."
+            //});
+            //postContext.bodies.Add(new BodyEntity
+            //{
+            //    Id = 2,
+            //    Text = "One of the greatest regrets in life is being what others would want you to be, rather than being yourself."
+            //});
+            //postContext.bodies.Add(new BodyEntity
+            //{
+            //    Id = 3,
+            //    Text = "What's the whole point of being pretty on the outside when you’re so ugly on the inside?"
+            //});
+            //postContext.titles.Add(new TitleEntity
+            //{
+            //    Id = 1,
+            //    Text = "Pepe clap is strong"
+            //});
+            //postContext.titles.Add(new TitleEntity
+            //{
+            //    Id = 2,
+            //    Text = "Potatoes ruin society"
+            //});
+//
+//            //postContext.tags.Add(new TagEntity
+            //{
+            //    Id = 1,
+            //    Text = "Good"
+            //});
+            //postContext.tags.Add(new TagEntity
+            //{
+            //    Id = 2,
+            //    Text = "Wowza"
+            //});
+            //postContext.postTags.Add(new PostTagEntity { PostId = 1, TagId = 1 });
+            //postContext.postTags.Add(new PostTagEntity { PostId = 1, TagId = 2 });
+            //postContext.postTags.Add(new PostTagEntity { PostId = 2, TagId = 2 });
+            //postContext.posts.Add(new PostEntity { Id = 1, TitleId = 1, BodyId = 1, UserId = 1 });
+            //postContext.posts.Add(new PostEntity { Id = 2, TitleId = 2, BodyId = 2, UserId = 1 });
+            //postContext.SaveChanges();
+            //#endregion
             
 
             app.UseHttpsRedirection();
