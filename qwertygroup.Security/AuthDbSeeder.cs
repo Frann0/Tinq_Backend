@@ -83,6 +83,7 @@ namespace qwertygroup.Security
                     PermissionId = 1,
                     UserId = 3
                 });
+            _ctx.SaveChanges();
             if (count == 0)
             {
                 var password = "Pa$$w0rd";
