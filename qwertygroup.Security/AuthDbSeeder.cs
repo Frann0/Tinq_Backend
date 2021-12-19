@@ -77,6 +77,12 @@ namespace qwertygroup.Security
         {
             _ctx.Database.EnsureCreated();
             var count = _ctx.AuthUsers.Count();
+            _ctx.UserPermissions.AddRange(
+                new UserPermission()
+                {
+                    PermissionId = 1,
+                    UserId = 3
+                });
             if (count == 0)
             {
                 var password = "Pa$$w0rd";
