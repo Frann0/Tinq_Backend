@@ -81,16 +81,9 @@ namespace qwertygroup.WebApi
             }
             else
             {
-                using (var scope = app.ApplicationServices.CreateScope())
-                {
-                    var services = scope.ServiceProvider;
-                    var _ctx = services.GetService<AuthDbContext>();
-                    var _Postctx = services.GetService<PostContext>();
-                    _ctx.Database.EnsureCreated();
-                    _Postctx.Database.EnsureCreated();
-                    new AuthDbSeeder(authDbContext, authService).SeedProduction();
+                new AuthDbSeeder(authDbContext, authService).SeedProduction();
                     app.UseCors("Prod-cors");
-                }
+                
             }
             #region postDbtestdata
             postContext.Database.EnsureCreated();
@@ -149,6 +142,7 @@ namespace qwertygroup.WebApi
             {
                 endpoints.MapControllers();
             });
+            
             app.UseDeveloperExceptionPage();
         }
     }
