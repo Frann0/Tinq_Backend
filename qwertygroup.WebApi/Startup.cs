@@ -81,8 +81,9 @@ namespace qwertygroup.WebApi
             }
             else
             {
-                new AuthDbSeeder(authDbContext, authService).SeedDevelopment();
-                app.UseCors("Prod-cors");
+                new AuthDbSeeder(authDbContext, authService).SeedProduction();
+                    app.UseCors("Prod-cors");
+                
             }
             postContext.Database.EnsureCreated();
             //#region postDbtestdata
@@ -142,6 +143,7 @@ namespace qwertygroup.WebApi
             {
                 endpoints.MapControllers();
             });
+            
             app.UseDeveloperExceptionPage();
         }
     }
