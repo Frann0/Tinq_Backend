@@ -81,11 +81,18 @@ namespace qwertygroup.WebApi
             }
             else
             {
-                new AuthDbSeeder(authDbContext, authService).SeedProduction();
-                app.UseCors("Prod-cors");
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    var _ctx = services.GetService<AuthDbContext>();
+                    var _Postctx = services.GetService<PostContext>();
+                    _ctx.Database.EnsureCreated();
+                    _Postctx.Database.EnsureCreated();
+                    new AuthDbSeeder(authDbContext, authService).SeedDevelopment();
+                    app.UseCors("Prod-cors");
+                }
             }
             #region postDbtestdata
-            postContext.Database.EnsureDeleted();
             postContext.Database.EnsureCreated();
             postContext.bodies.Add(new BodyEntity
             {
