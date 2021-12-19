@@ -88,7 +88,7 @@ namespace qwertygroup.WebApi
                     var _Postctx = services.GetService<PostContext>();
                     _ctx.Database.EnsureCreated();
                     _Postctx.Database.EnsureCreated();
-                    new AuthDbSeeder(authDbContext, authService).SeedDevelopment();
+                    new AuthDbSeeder(authDbContext, authService).SeedProduction();
                     app.UseCors("Prod-cors");
                 }
             }
