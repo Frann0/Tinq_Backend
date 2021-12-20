@@ -43,6 +43,7 @@ namespace qwertygroup.WebApi.Middleware
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidateLifetime = true,
                     // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                     ClockSkew = TimeSpan.Zero,
                     ValidIssuer = _configuration["JwtConfig:Issuer"],
